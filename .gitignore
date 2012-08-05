@@ -1,4 +1,4 @@
-lib-cov
+*.swp
 *.seed
 *.log
 *.csv
@@ -6,7 +6,10 @@ lib-cov
 *.out
 *.pid
 *.gz
+*~
 
+lib-cov
+build/
 pids
 logs
 results
