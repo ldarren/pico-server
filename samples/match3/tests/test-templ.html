@@ -1,0 +1,56 @@
+<style>
+*{
+  margin:0;
+  padding:0;
+}
+#combo-select{
+  display:inline-block;
+  width:120px;
+}
+#combo-input{
+  position:relative;
+  border:0;
+  border-width:0;
+  border-style:none;
+  width:100px;
+  left:-120px;
+}
+.combo-show{
+  display:inline-block;
+}
+.combo-hide{
+  display:none;
+}
+</style>
+<script>
+  var
+  cselect, cinput,
+  onBlur = function(){
+    cinput.className = 'combo-hide';
+    if ('' !== cinput.value){
+      var len = cselect.options.length;
+      cselect.options[len] = new Option(cinput.value, cinput.value);
+      cselect.selectedIndex = len;
+      cinput.value = '';
+    }
+  },
+  onChange = function(select){
+    if ('--' === cselect.options[cselect.selectedIndex].value){
+      cinput.className = 'combo-show';
+      cinput.focus();
+    }
+    console.log(cselect.options[cselect.selectedIndex].value);
+  };
+
+  cselect = document.getElementById('combo-select');
+  cinput = document.getElementById('combo-input');
+
+  cselect.addEventListener('change', onChange);
+  cinput.addEventListener('blur', onBlur);
+</script>
+<select id=combo-select>
+<option value=-->- new -</option>
+<option value=mars selected=true>mars</option>
+<option value=venus>venus</option>
+</select>
+<input id=combo-input class=combo-hide type=text />

@@ -1,0 +1,100 @@
+<html>
+<head>
+<style>
+*{
+  margin:0;
+  padding:0;
+}
+div#top{
+  position:absolute;
+  top:0;
+  height:32px;
+  right:0;
+  width:100%;
+  background-color:#DFFD61;
+  z-index:100;
+  -webkit-transition:height 0.1s ease-out;
+}
+div.content{
+  position:absolute;
+  top:32px;
+  bottom:32px;
+  right:0;
+  width:100%;
+  background-color:#84A300;
+}
+div#bottom{
+  position:absolute;
+  bottom:0;
+  height:32px;
+  right:0;
+  width:100%;
+  background-color:#C6F500;
+  z-index:100;
+  -webkit-transition:height 0.1s ease-out;
+}
+div#line{
+  position:absolute;
+  top:50%;
+  left:0;
+  height:0;
+  width:0;
+  visibility:hidden;
+  border-bottom:1px solid #84A300;
+  box-shadow:0 0 10px #84A300;
+  z-index:1000;
+  -webkit-transition:width 1s linear;
+}
+</style>
+</head>
+<body>
+
+<div id=top></div>
+<div id=line></div>
+<div class=content>
+<a id=close>close</a>
+</div>
+<div id=bottom></div>
+
+<script>
+function done(evt){
+  var
+  t = document.getElementById('top'),
+  b = document.getElementById('bottom'),
+  line = document.getElementById('line');
+
+  t.removeEventListener('webkitTransitionEnd',loading);
+
+  t.style.height = b.style.height = '32px';
+  line.style.visibility = 'hidden'
+  line.style.width = 0;
+}
+function loading(evt){
+  var
+  line = document.getElementById('line'),
+  w = document.body.clientWidth;
+  line.style.visibility = 'visible'
+  line.style.width = w+'px';
+  line.addEventListener('webkitTransitionEnd', done);
+}
+function main(evt){
+  var close = document.getElementById('close');
+  close.addEventListener('click', function(evt){
+    var
+    t = document.getElementById('top'),
+    b = document.getElementById('bottom'),
+    h2 = document.body.clientHeight/2;
+
+    t.addEventListener('webkitTransitionEnd', loading);
+
+    t.style.height = h2+'px';
+    b.style.height = h2+'px';
+  });
+}
+
+window.addEventListener('load', main);
+
+</script>
+
+</body>
+</html>

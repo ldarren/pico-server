@@ -1,0 +1,24 @@
+{
+  "name": "pico-server",
+  "description": "A lean and mean realtime game server",
+  "keywords": ["async","game","server"],
+  "version": "0.0.1-08-01",
+  "author": "Darren Liew <ldarren@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ldarren/pico-server.git" },
+  "dependencies": {
+    "node-riak-client": "",
+    "redis": ""},
+  "bugs": {
+    "mail": "ldarren@gmail.com",
+    "url": "http://github.com/ldarren/pico-server/issues" },
+  "os": ["linux", "darwin", "freebsd", "windows" ],
+  "main": "./index",
+  "directories": { "lib" : "./lib" },
+  "engines": { "node" : ">=0.8.0" },
+  "scripts": { "install" : "node install.js" },
+  "licenses": [ { "type" :  "Apache License, Version 2.0",
+  "url": "http://www.apache.org/licenses/LICENSE-2.0" } ]
+}
+
