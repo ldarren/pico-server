@@ -1,7 +1,3 @@
-process.on('uncaughtException', function(err){
-    console.error('[uncaught exception', err);
-});
-
 require('./lib/const');
 
 var
@@ -16,6 +12,14 @@ exports.createApp = function(rootPath, configBasePath, configPath){
 
     loadConfig(rootPath, configBasePath, configPath, function(err, config){
         if (err) return console.error(err);
+
+        if ('live' === config.app.env){
+            // this might supress bug alert
+            process.on('uncaughtException', function(err){
+                console.error('[uncaught exception', err);
+            });
+        }
+
 
         if (cluster.isMaster){
             if (!config.worker) return console.error('no worker config found');
@@ -33,4 +37,4 @@ exports.createApp = function(rootPath, configBasePath, configPath){
             }
         }
     });
-});
+};
