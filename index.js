@@ -9,7 +9,7 @@ exports.createApp = function(rootPath, configBasePath, configPath){
 
     if (env.picoConfigBasePath) configBasePath = env.picoConfigBasePath;
     if (env.picoConfigPath) configPath = env.picoConfigPath;
-
+console.log(rootPath,configBasePath,configPath);
     loadConfig(rootPath, configBasePath, configPath, function(err, config){
         if (err) return console.error(err);
 
@@ -31,8 +31,8 @@ exports.createApp = function(rootPath, configBasePath, configPath){
 
             for(var i=0,l=workerCfg.count || require('os').cpus().length; i<l; i++){
                 cluster.fork({
-                    picoConfigBasePath: workerCfg.cfgBase,
-                    picoConfigPath:workerCfg.cfg
+                    picoConfigBasePath: rootPath + '/' + workerCfg.cfgBase,
+                    picoConfigPath: rootPath + '/' + workerCfg.cfg
                 });
             }
         }
