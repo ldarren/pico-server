@@ -1,3 +1,4 @@
+require('pico-common/const');
 require('./lib/const');
 
 var
