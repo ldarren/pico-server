@@ -2,6 +2,7 @@ require('pico-common/const');
 require('./lib/const');
 
 var
+path = require('path'),
 cluster = require('cluster'),
 loadConfig = require('./lib/utils').loadConfig;
 
@@ -32,8 +33,8 @@ console.log(rootPath,configBasePath,configPath);
 
             for(var i=0,l=workerCfg.count || require('os').cpus().length; i<l; i++){
                 cluster.fork({
-                    picoConfigBasePath: rootPath + '/' + workerCfg.cfgBase,
-                    picoConfigPath: rootPath + '/' + workerCfg.cfg
+                    picoConfigBasePath: rootPath + path.sep + workerCfg.cfgBase,
+                    picoConfigPath: rootPath + path.sep + workerCfg.cfg
                 });
             }
         }
