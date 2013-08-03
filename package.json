@@ -1,6 +1,6 @@
 {
     "name": "pico-server",
-    "version": "0.1.8-27-05",
+    "version": "0.1.9-03-08",
     "main": "./index",
     "description": "A lean and mean realtime game server",
     "keywords": [
