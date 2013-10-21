@@ -84,7 +84,6 @@ function hello(session, order, cb){
 	);
 	cb();
 }
-
 exports.setup = function(context, next){
 	var web = context.webServer;
 	web.route('Hello', [hello]);
