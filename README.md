@@ -1,7 +1,7 @@
 pico-server
 ===========
 
-A lean and mean realtime http server
+A lean and mean realtime http/https server
 
 Features
 ========
@@ -19,8 +19,8 @@ Installation
 4. npm link pico-server
 5. mkdir app # all your server code should goes here
 
-Setup A Hello World Server
-==========================
+Create a Hello World Server
+===========================
 1. mkdir -p app/config app/actions # create minimal project folders
 2. touch app/config/master.json app/config/worker.json
 3. paste this to your master.json
@@ -34,6 +34,8 @@ Setup A Hello World Server
     "worker":{
         "config": "config/worker",
         "count":1
+    },
+    "lib":{
     }
 }
 ```
@@ -59,7 +61,7 @@ Setup A Hello World Server
 5. vi app/index.js # create server entry point
 ```
 var pico = require('pico-server');
-pico.createApp('PATH/TO/APP/', 'CONFIG/PATH'); // pico.createApp('/var/nodes/YOUR_PROJ_DIR/app', 'config/master');
+pico.createApp('PATH/TO/APP/', 'CONFIG/PATH'); // pico.createApp('/var/nodes/YOUR_PROJ_DIR/app', '/var/nodes/YOUR_PROJ_DIR/app/config/master');
 ```
 
 6. vi app/actions/index.js
