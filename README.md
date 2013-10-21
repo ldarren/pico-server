@@ -24,7 +24,7 @@ Setup A Hello World Server
 1. mkdir -p app/config app/actions # create minimal project folders
 2. touch app/config/master.json app/config/worker.json
 3. paste this to your master.json
-```json
+```javascript
 {
     "app":{
         "name": "YOUR_PROJECT_NAME",
@@ -36,10 +36,9 @@ Setup A Hello World Server
         "count":1
     }
 }
-
 ```
 4. paste this to your worker.json
-```json
+```javascript
 {
     "app":{
         "name": "YOUR_PROJECT_NAME",
@@ -54,7 +53,6 @@ Setup A Hello World Server
         }
     }
 }
-
 ```
 5. vi app/index.js # create server entry point
 ```javascript
@@ -87,14 +85,14 @@ exports.setup = function(context, next){
 	var web = context.webServer;
 	web.route('Hello', [hello]);
 };
+```
 8. run the server in YOUR_PROJ_DIR, node app -c config/master
 9. test the server with chrome extension's postman. install it from chrome webstore
 10. in postman, choose POST action, data type choose RAW and json, target: http://YOUR_SERVER_IP:5678/post, payload
-```json
+```javascript
 {
   "api": "Hello",
   "reqId": 1,
   "data": ""
-};
-```
+}
 ```
