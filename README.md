@@ -93,12 +93,7 @@ exports.setup = function(context, next){
 ```
 
 8. run the server in YOUR_PROJ_DIR, node app -c config/master
-9. test the server with chrome extension's postman. install it from chrome webstore
-10. in postman, choose POST action, data type choose RAW and json, target: http://YOUR_SERVER_IP:5678/post, payload
+9. run following curl command on your local machine
 ```
-{
-  "api": "Hello",
-  "reqId": 1,
-  "data": ""
-}
+curl -X POST -H "Content-Type: application/json" -d '{"api":"Hello","reqId":1,"data":""}' http://YOUR_SERVER_IP:5678/post
 ```
