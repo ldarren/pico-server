@@ -95,5 +95,5 @@ exports.setup = function(context, next){
 8. run the server in YOUR_PROJ_DIR, node app -c config/master
 9. run following curl command on your local machine
 ```
-curl -X POST -H "Content-Type: application/json" -d '{"api":"Hello","reqId":1,"data":""}' http://YOUR_SERVER_IP:5678/post
+curl -X POST -H "Content-Type: application/json" -d '{"api":"Hello","reqId":1,"data":""}' http://YOUR_SERVER_IP:5678/pull
 ```
