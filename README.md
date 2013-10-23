@@ -6,9 +6,9 @@ A lean and mean realtime http/https server
 Features
 ========
 * two channel design, push and pull channel to achieve fast and realtime http server
-* data cache to prevent data lost
+* data cache to prevent data lost (WIP)
 * efficent user session handling, session only persistence when pull channel dc
-* multiple input per query similar to facebook "big pipeline"
+* supported bath requests 
 * server stream data to client through push channel
 
 Installation
