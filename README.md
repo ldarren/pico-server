@@ -61,7 +61,8 @@ Create a Hello World Server
 5. vi app/index.js # create server entry point
 ```
 var pico = require('pico-server');
-pico.createApp('PATH/TO/APP/', 'CONFIG/PATH'); // pico.createApp('/var/nodes/YOUR_PROJ_DIR/app', '/var/nodes/YOUR_PROJ_DIR/app/config/master');
+// pico.createApp('/var/nodes/YOUR_PROJ_DIR/app', 'config/master');
+pico.createApp('PATH/TO/APP/', 'CONFIG/PATH');
 ```
 
 6. vi app/actions/index.js
@@ -92,8 +93,11 @@ exports.setup = function(context, next){
 };
 ```
 
-8. run the server in YOUR_PROJ_DIR, node app -c config/master
+8. run the server in YOUR_PROJ_DIR
+```
+node app
+```
 9. run following curl command on your local machine
 ```
-curl -X POST -H "Content-Type: application/json" -d '{"api":"Hello","reqId":1,"data":""}' http://YOUR_SERVER_IP:5678/pull
+curl -X POST -H "Content-Type: application/json" -d '[{"api":"Hello","reqId":1,"data":""}]' http://YOUR_SERVER_IP:5678/pull
 ```
