@@ -1,6 +1,6 @@
 {
     "name": "pico-server",
-    "version": "0.1.16-25-10",
+    "version": "0.1.17-25-10",
     "main": "./index",
     "description": "A lean and mean realtime http server",
     "keywords": [
