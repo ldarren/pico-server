@@ -1,0 +1,21 @@
+{
+    "app":{
+        "name": "WebChat",
+        "env": "dev",
+        "elements": ["actions", "models"]
+    },
+    "lib":{
+        "webServer":{
+            "mod":"web",
+            "port":4888,
+            "updateRate":60000
+        },
+        "redisChannel":{
+            "mod":"redis",
+            "host":"localhost",
+            "port":6379,
+            "db":10,
+            "options":{}
+        }
+    }
+}
