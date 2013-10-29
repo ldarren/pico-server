@@ -35,39 +35,44 @@ ChannelStorage.prototype = {
         });
     },
     newMessageId: function(channelId, cb){
-        var cId = this.getChannelKey(channelId);
-        this.client.hincrby(cid, KEY_MESSAGE_COUNTER, cb);
+        var cid = getChannelKey(channelId);
+        this.client.hincrby(cid, KEY_MESSAGE_COUNTER, 1, cb);
     },
 
     storeMessage: function(channelId, msgId, msg, cb){
-        var cId = this.getChannelKey(channelId);
+        var cId = getChannelKey(channelId);
         this.client.multi()
         .hset(cId, msgId, msg)
         .expire(cId, this.expiry)
         .exec(function(err){
-            return cb(err, msgId);
+            return cb(err);
         });
     },
     retrieveMsgIds: function(channelId, cb){
-        this.client.hkeys(channelId, cb);
+        this.client.hkeys(getChannelKey(channelId), function(err, msgIds){
+            if (err) return cb(err);
+            var i = msgIds.indexOf(KEY_MESSAGE_COUNTER);
+            msgIds.splice(i, 1);
+            cb(null, msgIds);
+        });
     },
     retrieveMessage: function(channelId, msgId, cb){
-        this.client.hget(this.getChannelKey(channelId), msgId, cb);
+        this.client.hget(getChannelKey(channelId), msgId, cb);
     },
     retrieveMessages: function(channelId, msgIds, cb){
         var args = msgIds.slice();
-        args.unshift(this.getChannelKey(channelId));
-        this.client.hvals(args, cb);
+        args.unshift(getChannelKey(channelId));
+        this.client.hmget(args, cb);
     },
     retrieveAllMessages: function(channelId, cb){
-        this.client.hgetall(this.getChannelKey(channelId), cb);
+        this.client.hgetall(getChannelKey(channelId), cb);
     },
     removeMessages: function(channelId, msgIds, cb){
         var args = msgIds.slice();
-        args.unshift(this.getChannelKey(channelId));
+        args.unshift(getChannelKey(channelId));
         this.client.hdel(args, cb);
     },
     removeMessage: function(channelId, msgId, cb){
-        this.client.hdel(this.getChannelKey(channelId), msgId, cb);
+        this.client.hdel(getChannelKey(channelId), msgId, cb);
     }
 };

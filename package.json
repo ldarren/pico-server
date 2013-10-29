@@ -1,6 +1,6 @@
 {
     "name": "pico-server",
-    "version": "0.1.21-25-10",
+    "version": "0.2.0-29-10",
     "main": "./index",
     "description": "A lean and mean realtime http server",
     "keywords": [
@@ -19,7 +19,7 @@
         "hiredis": "",
         "mysql": "",
         "node-riak-client": "",
-        "pico-common": ">=0.0.1",
+        "pico-common": ">=0.0.10",
         "redis": ""
     },
     "bugs": {
