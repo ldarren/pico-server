@@ -29,7 +29,7 @@ ChannelStorage.prototype = {
         key = getChannelCounterKey(now.getMinutes());
         this.client.multi()
         .incr(key)
-        .expire(key)
+        .expire(key, 120)
         .exec(function(err, ret){
             cb(err, ret ? now.getTime()*1000 + ret[0] : undefined);
         });
