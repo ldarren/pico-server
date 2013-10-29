@@ -1,6 +1,6 @@
 const
 KEY_CHANNEL = 'hC:',
-KEY_CHANNEL_COUNTER = ':sCC:',
+KEY_CHANNEL_COUNTER = 'sCC:',
 KEY_MESSAGE_COUNTER = 'counter';
 
 var ChannelStorage = module.exports = {
@@ -10,6 +10,9 @@ var ChannelStorage = module.exports = {
 
 function getChannelKey(channelId){
     return KEY_CHANNEL + channelId;
+}
+function getChannelCounterKey(min){
+    return KEY_CHANNEL_COUNTER + min;
 }
 function getMessageCounterKey(channelId){
     return KEY_MESSAGE_COUNTER + channelId;
@@ -21,19 +24,28 @@ ChannelStorage.prototype = {
         this.expiry = expiry;
     },
     newChannelId: function(cb){
-        this.client.incr(KEY_CHANNEL_COUNTER, cb);
+        var
+        now = new Date(),
+        key = getChannelCounterKey(now.getMinutes());
+        this.client.multi()
+        .incr(key)
+        .expire(key)
+        .exec(function(err, ret){
+            cb(err, ret ? now.getTime()*1000 + ret[0] : undefined);
+        });
+    },
+    newMessageId: function(channelId, cb){
+        var cId = this.getChannelKey(channelId);
+        this.client.hincrby(cid, KEY_MESSAGE_COUNTER, cb);
     },
 
-    storeMessage: function(channelId, msg, cb){
+    storeMessage: function(channelId, msgId, msg, cb){
         var cId = this.getChannelKey(channelId);
-        this.client.hincrby(cid, KEY_MESSAGE_COUNTER, function(err, msgId){
-            if(err) return cb(err);
-            this.client.multi()
-            .hset(cId, msgId, msg)
-            .expire(cId, this.expiry)
-            .exec(function(err){
-                return cb(err, msgId);
-            });
+        this.client.multi()
+        .hset(cId, msgId, msg)
+        .expire(cId, this.expiry)
+        .exec(function(err){
+            return cb(err, msgId);
         });
     },
     retrieveMsgIds: function(channelId, cb){
