@@ -8,7 +8,6 @@
         "webServer":{
             "mod":"web",
             "port":4888,
-            "secretKey": "rtyu",
             "updateRate":60000
         },
         "redisChannel":{
