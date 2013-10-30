@@ -106,7 +106,7 @@ Configuration
 =============
 pico server has two types of configuration files, master process configuration and worker process configuration. every 
 pico server must has one master process and zero to unlimited numbers of worker processes.
-==Web Server Config==
+##Web Server Config
 ```
 "webServer":{
     "mod":"web",
@@ -117,9 +117,9 @@ pico server must has one master process and zero to unlimited numbers of worker 
     "delimiter":["crlf"]
 },
 ```
-* webServer: library name, compulsary but name can be any string
-* mod: module name, compulsary, must use "web" for web server
-* secretKey: request hash key, optional, if not available, request hash will not be checked
-* cullAge: request time check, optional, if not available, +- 1 hour allowanceis given
-* updateRate: long polling request update rate (milliseconds), optional
-* delimiter: for client without ajax, delimiter can be added to separate response, optional
+- webServer: library name, compulsary but name can be any string
+- mod: module name, compulsary, must use "web" for web server
+- secretKey: request hash key, optional, if not available, request hash will not be checked
+- cullAge: request time check, optional, if not available, +- 1 hour allowanceis given
+- updateRate: long polling request update rate (milliseconds), optional
+- delimiter: for client without ajax, delimiter can be added to separate response, optional
