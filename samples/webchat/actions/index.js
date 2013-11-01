@@ -5,7 +5,6 @@ testResponse = function(session, order, next){
     model['me'] = 'world';
     session.addJob(
         order.api,
-        order.reqId,
         undefined,
         undefined,
         G_PICO_WEB.RENDER_FULL,

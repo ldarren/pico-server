@@ -79,7 +79,6 @@ function hello(session, order, cb){
 	model['me'] = 'world';
 	session.addJob(
 		order.api,
-		order.reqId,
 		undefined,
 		undefined,
 		G_PICO_WEB.RENDER_FULL,
@@ -117,6 +116,7 @@ pico server must has one master process and zero to unlimited numbers of worker 
     "delimiter":["crlf"]
 },
 ```
+
 - webServer: library name, compulsary but name can be any string
 - mod: module name, compulsary, must use "web" for web server
 - secretKey: request hash key, optional, if not available, request hash will not be checked
