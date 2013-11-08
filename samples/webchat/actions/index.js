@@ -8,7 +8,7 @@ testResponse = function(session, order, next){
         undefined,
         undefined,
         G_PICO_WEB.RENDER_FULL,
-        [[session.createModelInfo('foobar1', 'me2')]]
+        [[session.createModelInfo('foobar', 'me')]]
     );
 
     next();
