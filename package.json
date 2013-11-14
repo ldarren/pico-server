@@ -1,6 +1,6 @@
 {
     "name": "pico-server",
-    "version": "0.2.10-2013-11-08",
+    "version": "0.2.11-2013-11-14",
     "main": "./index",
     "description": "A lean and mean realtime web server",
     "keywords": [
@@ -39,4 +39,3 @@
         "type" :  "MIT"
     }
 }
-
