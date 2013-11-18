@@ -16,6 +16,15 @@
             "port":6379,
             "db":10,
             "options":{}
+        },
+        "ritbAnalytics":{
+            "mod":"analytics",
+            "trackingId":"UA-44242154-4",
+            "defaultClientId":"nodejs",
+            "secure":false,
+            "options":{
+                "ni":1
+            }
         }
     }
 }
