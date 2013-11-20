@@ -1,41 +1,41 @@
 {
-    "name": "pico-server",
-    "version": "0.2.16",
-    "main": "./index",
-    "description": "A lean and mean realtime web server",
-    "keywords": [
-        "server",
-        "pico"
-    ],
-    "author": {
-        "name": "Darren Liew",
-        "email": "ldarren@gmail.com"
-    },
-    "repository": {
-        "type": "git",
-        "url": "http://github.com/ldarren/pico-server.git"
-    },
-    "dependencies": {
-        "hiredis": "",
-        "mysql": "",
-        "node-riak-client": "",
-        "pico-common": ">=0.0.10",
-        "redis": ""
-    },
-    "bugs": {
-        "mail": "ldarren@gmail.com",
-        "url": "http://github.com/ldarren/pico-server/issues"
-    },
-    "os": [
-        "linux"
-    ],
-    "directories": {
-        "lib" : "./lib"
-    },
-    "engines": {
-        "node" : ">=0.10.0"
-    },
-    "licenses": {
-        "type" :  "MIT"
-    }
+  "name": "pico-server",
+  "version": "0.3.0",
+  "main": "./index",
+  "description": "A lean and mean realtime web server",
+  "keywords": [
+    "server",
+    "pico"
+  ],
+  "author": {
+    "name": "Darren Liew",
+    "email": "ldarren@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/ldarren/pico-server.git"
+  },
+  "dependencies": {
+    "hiredis": "",
+    "mysql": "",
+    "node-riak-client": "",
+    "pico-common": ">=0.0.10",
+    "redis": ""
+  },
+  "bugs": {
+    "mail": "ldarren@gmail.com",
+    "url": "http://github.com/ldarren/pico-server/issues"
+  },
+  "os": [
+    "linux"
+  ],
+  "directories": {
+    "lib": "./lib"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "licenses": {
+    "type": "MIT"
+  }
 }
