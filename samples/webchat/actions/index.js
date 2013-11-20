@@ -17,17 +17,26 @@ chatResponse = function(session, order, next){
     next();
 },
 listResponse = function(session, order, next){
-    var model = session.getModel('foobar');
-    model['me'] = 'world';
-    session.addJob(
-        order.api,
-        undefined,
-        undefined,
-        G_PICO_WEB.RENDER_FULL,
-        [[session.createModelInfo('foobar', 'me')]]
-    );
+    var statement = {
+                'start-date': '2013-11-01',
+                'end-date': '2014-01-01',
+                'metrics': 'ga:visits',
+                'max-results': '10'
+                };
+    reporting.query(statement, function(err, result){
+        if (err) return cb(err);
+        var model = session.getModel('foobar');
+        model['me'] = result;
+        session.addJob(
+            order.api,
+            undefined,
+            undefined,
+            G_PICO_WEB.RENDER_FULL,
+            [[session.createModelInfo('foobar', 'me')]]
+        );
 
-    next();
+        next();
+    });
 },
 router = {
     setup: function(context, next){
