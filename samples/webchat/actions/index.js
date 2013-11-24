@@ -4,7 +4,7 @@ analytics = null,
 reporting = null,
 chatResponse = function(session, order, next){
     var model = session.getModel('foobar');
-    model['me'] = 'world';
+    model['me'] = order.data ? order.data.msg || '?' : '?';
     session.addJob(
         order.api,
         undefined,
