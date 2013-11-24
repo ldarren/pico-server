@@ -28,7 +28,7 @@
         },
         "chatUAReporting":{
             "mod":"ua_reporting",
-            "key":"config/princess-sad-beta-privatekey.pem",
+            "key":"config/chat-privatekey.pem",
             "account":"419961547358-71v86skqc3r42supgpv7edihqe5gj5m3@developer.gserviceaccount.com",
             "viewId":"79244917"
         }
