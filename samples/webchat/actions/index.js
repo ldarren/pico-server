@@ -17,6 +17,7 @@ chatResponse = function(session, order, next){
     next();
 },
 listResponse = function(session, order, next){
+    if (!order.data) return next(G_CERROR[419]);
     var statement = {
                 'start-date': '2013-11-01',
                 'end-date': '2014-01-01',
