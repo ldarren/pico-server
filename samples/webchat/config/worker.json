@@ -7,8 +7,7 @@
     "lib":{
         "webServer":{
             "mod":"web",
-            "port":4888,
-            "updateRate":60000
+            "port":4888
         },
         "redisChannel":{
             "mod":"redis",
