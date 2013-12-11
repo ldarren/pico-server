@@ -7,6 +7,7 @@
     "lib":{
         "webServer":{
             "mod":"web",
+            "allowOrigin":"107.20.154.29:4888",
             "port":4888
         },
         "redisChannel":{
