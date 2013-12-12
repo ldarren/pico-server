@@ -1,7 +1,7 @@
 pico-server
 ===========
 
-A lean and mean realtime http/https server
+A lean and mean realtime api server
 
 Features
 ========
