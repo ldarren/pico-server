@@ -78,9 +78,6 @@ function hello(session, order, cb){
 	var model = session.getModel('foobar');
 	model['me'] = 'world';
 	session.addJob(
-		order.api,
-		undefined,
-		undefined,
 		G_PICO_WEB.RENDER_FULL,
 		[[session.createModelInfo('foobar', 'me')]]
 	);
