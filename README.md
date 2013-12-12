@@ -115,8 +115,10 @@ pico server must has one master process and zero to unlimited numbers of worker 
 },
 ```
 
-- webServer: library name, compulsary but name can be any string
+- webServer: module instance name, compulsary but name can be any
 - mod: module name, compulsary, must use "web" for web server
+- pfx: ssl cert path relative to app folder, if available, https protocol will be used
+- allowOrigin: cross origin policy, if not not available, allowOrigin is set to *
 - secretKey: request hash key, optional, if not available, request hash will not be checked
 - cullAge: request time check, optional, if not available, +- 1 hour allowanceis given
 - delimiter: for client without ajax, delimiter can be added to separate response, optional
