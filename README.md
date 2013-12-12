@@ -107,9 +107,10 @@ pico server must has one master process and zero to unlimited numbers of worker 
 "webServer":{
     "mod":"web",
     "port":56789,
-    "secretKey":"b0nnIe",
+    "pfx":"config/dev_ssl.pfx",
+    "allowOrigin":"25.107.56.189:6666",
+    "secretKey":"hashash",
     "cullAge":120000,
-    "updateRate":60000,
     "delimiter":["crlf"]
 },
 ```
@@ -118,5 +119,4 @@ pico server must has one master process and zero to unlimited numbers of worker 
 - mod: module name, compulsary, must use "web" for web server
 - secretKey: request hash key, optional, if not available, request hash will not be checked
 - cullAge: request time check, optional, if not available, +- 1 hour allowanceis given
-- updateRate: long polling request update rate (milliseconds), optional
 - delimiter: for client without ajax, delimiter can be added to separate response, optional
