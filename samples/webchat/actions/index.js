@@ -6,9 +6,6 @@ chatResponse = function(session, order, next){
     var model = session.getModel('foobar');
     model['me'] = order.data ? order.data.msg || '?' : '?';
     session.addJob(
-        order.api,
-        undefined,
-        undefined,
         G_PICO_WEB.RENDER_FULL,
         [[session.createModelInfo('foobar', 'me')]]
     );
@@ -29,9 +26,6 @@ listResponse = function(session, order, next){
         var model = session.getModel('foobar');
         model['me'] = result;
         session.addJob(
-            order.api,
-            undefined,
-            undefined,
             G_PICO_WEB.RENDER_FULL,
             [[session.createModelInfo('foobar', 'me')]]
         );
