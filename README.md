@@ -1,3 +1,4 @@
+[![NPM version](https://badge.fury.io/js/pico-server.png)](http://badge.fury.io/js/pico-server)
 pico-server
 ===========
 
