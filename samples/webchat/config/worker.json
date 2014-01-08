@@ -17,6 +17,14 @@
             "db":10,
             "options":{}
         },
+        "mysqlTest":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "username":"root",
+            "password":"root",
+            "db":"sgGame"
+        },
         "chatUACollection":{
             "mod":"ua_collection",
             "trackingId":"UA-45869647-2",
