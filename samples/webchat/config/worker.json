@@ -14,16 +14,16 @@
             "mod":"redis",
             "host":"localhost",
             "port":6379,
-            "db":10,
+            "database":10,
             "options":{}
         },
         "mysqlTest":{
             "mod":"mysql",
             "host":"localhost",
             "port":3306,
-            "username":"root",
+            "user":"root",
             "password":"root",
-            "db":"sgGame"
+            "database":"sgGame"
         },
         "chatUACollection":{
             "mod":"ua_collection",
