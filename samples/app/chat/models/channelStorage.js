@@ -1,5 +1,5 @@
 var
-baseChannelStorage = require('../../../elements/channelStorage'),
+baseChannelStorage = require('../../../../elements/channelStorage'),
 channelStorage = Object.create(baseChannelStorage.prototype);
 channelStorage.setup = function(context, next){
     Object.getPrototypeOf(this).setup(context.redisChannel, 10 * 60);

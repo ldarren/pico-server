@@ -1,8 +1,8 @@
 {
     "app":{
-        "name": "WebChat",
+        "name": "Sample Worker",
         "env": "dev",
-        "elements": ["actions", "models"]
+        "elements": ["app/vip/actions", "app/vip/models", "app/chat/actions", "app/chat/models"]
     },
     "lib":{
         "webServer":{
@@ -28,7 +28,7 @@
         "chatUACollection":{
             "mod":"ua_collection",
             "trackingId":"UA-45869647-2",
-            "defaultClientId":"nodejs",
+            "defaultClientId":"pico_sample",
             "secure":false,
             "options":{
                 "ni":1
