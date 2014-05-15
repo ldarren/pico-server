@@ -1,3 +1,5 @@
 module.exports = [
-    require('./channelStorage')
+    require('./redis/channelStorage'),
+
+    require('./sql/shop')
 ];
