@@ -1,5 +1,5 @@
 const
-GET_ALL = 'SELECT name FROM shop;';
+GET_ALL = 'SELECT id, name FROM shop;';
 
 var client;
 
