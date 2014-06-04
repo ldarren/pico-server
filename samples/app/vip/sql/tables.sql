@@ -12,9 +12,20 @@ CREATE TABLE IF NOT EXISTS `user`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
-CREATE TABLE IF NOT EXISTS `group`(
+CREATE TABLE IF NOT EXISTS `device`(
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `userId` BIGINT NOT NULL,
+    `platform` VARCHAR(16) NOT NULL,
+    `uuid` VARCHAR(64) NOT NULL,
+    `token` VARCHAR(64) NOT NULL,
+    `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `createdAt` DATETIME NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `business`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
     `message` VARCHAR(160),
@@ -25,18 +36,20 @@ CREATE TABLE IF NOT EXISTS `group`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
 
 CREATE TABLE IF NOT EXISTS `follow`(
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
     `userId` BIGINT NOT NULL,
-    `groupId` BIGINT NOT NULL,
+    `businessId` BIGINT NOT NULL,
     `status` BIT(1) DEFAULT 1,
     `updatedBy` BIGINT,
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`userId`,`groupId`)
-)
+    PRIMARY KEY (`id`),
+    KEY (`userId`,`businessId`)
+);
 
 CREATE TABLE IF NOT EXISTS `tag`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -48,23 +61,25 @@ CREATE TABLE IF NOT EXISTS `tag`(
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
     KEY (`name`)
-)
+);
 
-CREATE TABLE IF NOT EXISTS `groupTag`(
-    `groupId` BIGINT NOT NULL,
+CREATE TABLE IF NOT EXISTS `businessTag`(
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `businessId` BIGINT NOT NULL,
     `tagId` BIGINT NOT NULL,
     `status` BIT(1) DEFAULT 1,
     `updatedBy` BIGINT,
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`groupId`, `tagId`)
-)
+    PRIMARY KEY (`id`),
+    KEY (`businessId`, `tagId`)
+);
 
 CREATE TABLE IF NOT EXISTS `flyer`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `page` TINYINT(8) DEFAULT 0,
-    `groupId` BIGINT NOT NULL,
+    `businessId` BIGINT NOT NULL,
     `startAt` DATETIME,
     `endAt` DATETIME,
     `status` BIT(1) DEFAULT 1,
@@ -73,4 +88,4 @@ CREATE TABLE IF NOT EXISTS `flyer`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`)
-)
+);
