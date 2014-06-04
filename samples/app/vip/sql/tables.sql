@@ -29,8 +29,7 @@ CREATE TABLE IF NOT EXISTS `device`(
 CREATE TABLE IF NOT EXISTS `business`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
-    `message` VARCHAR(160),
-    `logo` VARCHAR(64),
+    `about` VARCHAR(255),
     `status` BIT(1) DEFAULT 1,
     `updatedBy` BIGINT,
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
