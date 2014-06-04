@@ -10,21 +10,6 @@
             "allowOrigin":"*",
             "port":4888
         },
-        "redisChannel":{
-            "mod":"redis",
-            "host":"localhost",
-            "port":6379,
-            "database":10,
-            "options":{}
-        },
-        "sqlVIPShop":{
-            "mod":"mysql",
-            "host":"localhost",
-            "port":3306,
-            "user":"root",
-            "password":"root",
-            "database":"vip"
-        },
         "chatUACollection":{
             "mod":"ua_collection",
             "trackingId":"UA-45869647-2",
@@ -39,6 +24,69 @@
             "key":"config/chat-privatekey.pem",
             "account":"419961547358-71v86skqc3r42supgpv7edihqe5gj5m3@developer.gserviceaccount.com",
             "viewId":"79244917"
+        },
+        "redisChannel":{
+            "mod":"redis",
+            "host":"localhost",
+            "port":6379,
+            "database":10,
+            "options":{}
+        },
+        "sqlVIPBusiness":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPBusinessTag":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPDevice":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPFlyer":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPFollow":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPUser":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
+        },
+        "sqlVIPTag":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"vip"
         }
     }
 }
