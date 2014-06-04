@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS `user`(
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    PRIMARY KEY (`username`)
 );
 
 CREATE TABLE IF NOT EXISTS `device`(
@@ -35,7 +36,8 @@ CREATE TABLE IF NOT EXISTS `business`(
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY (`createdBy`)
 );
 
 CREATE TABLE IF NOT EXISTS `follow`(
@@ -48,7 +50,8 @@ CREATE TABLE IF NOT EXISTS `follow`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`userId`,`businessId`)
+    KEY (`userId`),
+    KEY (`businessId`)
 );
 
 CREATE TABLE IF NOT EXISTS `tag`(
@@ -59,8 +62,7 @@ CREATE TABLE IF NOT EXISTS `tag`(
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`id`),
-    KEY (`name`)
+    PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `businessTag`(
@@ -73,7 +75,8 @@ CREATE TABLE IF NOT EXISTS `businessTag`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`businessId`, `tagId`)
+    KEY (`businessId`),
+    KEY (`tagId`)
 );
 
 CREATE TABLE IF NOT EXISTS `flyer`(
@@ -87,5 +90,6 @@ CREATE TABLE IF NOT EXISTS `flyer`(
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    KEY (`businessId`)
 );
