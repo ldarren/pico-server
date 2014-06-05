@@ -1,21 +1,21 @@
 const
 ALLOW_UPDATE = ['name', 'about'],
-GET = 'SELECT id, name FROM business WHERE createdBy IN ($);',
-GET_BY_NAME = 'SELECT id FROM business WHERE createdBy = $ AND name = $;',
-CREATE = 'INSERT INTO business (name, about, createdBy, createdAt) VALUES (?, ?, ?, NOW());',
-UPDATE = 'UPDATE business SET ?;',
-REMOVE = 'UPDATE business SET status=0, updatedBy=?;';
+GET = 'SELECT id, name FROM company WHERE createdBy IN (?);',
+GET_BY_NAME = 'SELECT id FROM company WHERE createdBy = ? AND name = ?;',
+CREATE = 'INSERT INTO company (name, about, createdBy, createdAt) VALUES (?, ?, ?, NOW());',
+UPDATE = 'UPDATE company SET ?;',
+REMOVE = 'UPDATE company SET status=0, updatedBy=?;';
 
 var client;
 
 module.exports = {
     setup: function(context, next){
-        client = context.sqlVIPBusiness;
+        client = context.sqlVIPCompany;
         next();
     },
 
     create: function(name, about, createdBy, cb){
-        client.query(CREATE, [name, about || null], createdBy], cb);
+        client.query(CREATE, [name, about || null], createdBy, cb);
     },
 
     readByName: function(createdBy, name, cb){

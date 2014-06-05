@@ -32,7 +32,7 @@
             "database":10,
             "options":{}
         },
-        "sqlVIPBusiness":{
+        "sqlVIPCompany":{
             "mod":"mysql",
             "host":"localhost",
             "port":3306,
@@ -40,7 +40,7 @@
             "password":"root",
             "database":"vip"
         },
-        "sqlVIPBusinessTag":{
+        "sqlVIPCompanyTag":{
             "mod":"mysql",
             "host":"localhost",
             "port":3306,

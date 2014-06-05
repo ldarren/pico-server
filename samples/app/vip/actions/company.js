@@ -1,12 +1,13 @@
 const
 LOGO_PATH = '/var/node/sandbox/logo/',
-MODEL = 'business',
+LOGO_URL = 'http://107.20.154.29/logo/',
+MODEL = 'company',
 ME = 'me',
 LIST = 'list';
 
 var
 fs = require('fs'),
-sql = require('../models/sql/business'),
+sql = require('../models/sql/company'),
 moveLogo = function(src, id, cb){
     if (!src) return cb();
     fs.rename(src, LOGO_PATH+id, cb);
@@ -18,8 +19,8 @@ module.exports = {
         me = this,
         data = order.data,
         userId = data.userId,
-        name = data.name,
-        logo = data.logo;
+        name = data.name;
+
         if (!userId || !name) return next(G_CERROR['400']);
         sql.readByName(userId, name, function(err, rows){
             if (err) return next(err);
@@ -29,7 +30,8 @@ module.exports = {
             model[ME] = {
                 userId: userId,
                 name: name,
-                about: data.about
+                about: data.about,
+                logo: data.logo
             };
             session.addJob(
                 G_PICO_WEB.RENDER_FULL,
@@ -48,9 +50,12 @@ module.exports = {
         about = data.about;
 
         sql.create(data.name, data.about, data.userId, function(err, result){
-            if (err) cb(err);
+            if (err) return cb(err);
             data.id = result.insertId;
-            cb(null, models);
+            moveLogo(data.logo, LOGO_PATH+data.id, function(err){
+                if (err) return cb(err);
+                cb(null, models);
+            });
         });
     },
     read: function(session, order, next){

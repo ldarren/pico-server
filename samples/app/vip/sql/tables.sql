@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS `user`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    PRIMARY KEY (`username`)
+    KEY (`username`)
 );
 
 CREATE TABLE IF NOT EXISTS `device`(
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `device`(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS `business`(
+CREATE TABLE IF NOT EXISTS `company`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
     `about` VARCHAR(255),
@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS `business`(
 CREATE TABLE IF NOT EXISTS `follow`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `userId` BIGINT NOT NULL,
-    `businessId` BIGINT NOT NULL,
+    `companyId` BIGINT NOT NULL,
     `status` BIT(1) DEFAULT 1,
     `updatedBy` BIGINT,
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `follow`(
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
     KEY (`userId`),
-    KEY (`businessId`)
+    KEY (`companyId`)
 );
 
 CREATE TABLE IF NOT EXISTS `tag`(
@@ -64,9 +64,9 @@ CREATE TABLE IF NOT EXISTS `tag`(
     PRIMARY KEY (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS `businessTag`(
+CREATE TABLE IF NOT EXISTS `companyTag`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `businessId` BIGINT NOT NULL,
+    `companyId` BIGINT NOT NULL,
     `tagId` BIGINT NOT NULL,
     `status` BIT(1) DEFAULT 1,
     `updatedBy` BIGINT,
@@ -74,14 +74,14 @@ CREATE TABLE IF NOT EXISTS `businessTag`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`businessId`),
+    KEY (`companyId`),
     KEY (`tagId`)
 );
 
 CREATE TABLE IF NOT EXISTS `flyer`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `page` TINYINT(8) DEFAULT 0,
-    `businessId` BIGINT NOT NULL,
+    `companyId` BIGINT NOT NULL,
     `startAt` DATETIME,
     `endAt` DATETIME,
     `status` BIT(1) DEFAULT 1,
@@ -90,5 +90,5 @@ CREATE TABLE IF NOT EXISTS `flyer`(
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`businessId`)
+    KEY (`companyId`)
 );

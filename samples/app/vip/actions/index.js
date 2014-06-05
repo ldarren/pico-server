@@ -1,6 +1,6 @@
 var
-business = require('./business'),
-businessTag = require('./businessTag'),
+company = require('./company'),
+companyTag = require('./companyTag'),
 device = require('./device'),
 flyer = require('./flyer'),
 follow = require('./follow'),
@@ -17,19 +17,19 @@ router = {
 
         web.route('vip/device/update', [device.update]);
 
-        web.route('vip/business/create', [business.create]);
-        web.route('vip/business/read', [business.read]);
-        web.route('vip/business/update', [business.update]);
-        web.route('vip/business/remove', [business.remove]);
+        web.route('vip/company/create', [company.create]);
+        web.route('vip/company/read', [company.read]);
+        web.route('vip/company/update', [company.update]);
+        web.route('vip/company/remove', [company.remove]);
 
         web.route('vip/follow/create', [follow.create]);
         web.route('vip/follow/read', [follow.read]);
         web.route('vip/follow/remove', [follow.remove]);
 
-        web.route('vip/businessTag/create', [businessTag.create]);
-        web.route('vip/businessTag/read', [businessTag.read]);
-        web.route('vip/businessTag/update', [businessTag.update]);
-        web.route('vip/businessTag/remove', [businessTag.remove]);
+        web.route('vip/companyTag/create', [companyTag.create]);
+        web.route('vip/companyTag/read', [companyTag.read]);
+        web.route('vip/companyTag/update', [companyTag.update]);
+        web.route('vip/companyTag/remove', [companyTag.remove]);
 
         web.route('vip/flyer/create', [flyer.create]);
         web.route('vip/flyer/read', [flyer.read]);
