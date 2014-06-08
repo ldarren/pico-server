@@ -8,9 +8,9 @@ LIST = 'list';
 var
 fs = require('fs'),
 sql = require('../models/sql/company'),
-moveLogo = function(src, id, cb){
+moveLogo = function(src, dst, cb){
     if (!src) return cb();
-    fs.rename(src, LOGO_PATH+id, cb);
+    fs.rename(src, dst, cb);
 };
 
 module.exports = {
@@ -20,7 +20,7 @@ module.exports = {
         data = order.data,
         userId = data.userId,
         name = data.name;
-
+console.log(userId, name);
         if (!userId || !name) return next(G_CERROR['400']);
         sql.readByName(userId, name, function(err, rows){
             if (err) return next(err);
@@ -28,7 +28,7 @@ module.exports = {
 
             var model = session.getModel(MODEL);
             model[ME] = {
-                userId: userId,
+                createdBy: userId,
                 name: name,
                 about: data.about,
                 logo: data.logo
@@ -54,6 +54,7 @@ module.exports = {
             data.id = result.insertId;
             moveLogo(data.logo, LOGO_PATH+data.id, function(err){
                 if (err) return cb(err);
+                data.logo = LOGO_PATH+data.id;
                 cb(null, models);
             });
         });
