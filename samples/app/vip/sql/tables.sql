@@ -5,14 +5,14 @@ USE `vip`;
 CREATE TABLE IF NOT EXISTS `user`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
-    `username` VARCHAR(64) NOT NULL,
+    `email` VARCHAR(254) NOT NULL,
     `password` VARCHAR(64) NOT NULL,
     `updatedBy` BIGINT,
     `updatedAt` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `createdBy` BIGINT NOT NULL,
     `createdAt` DATETIME NOT NULL,
     PRIMARY KEY (`id`),
-    KEY (`username`)
+    KEY (`email`)
 );
 
 CREATE TABLE IF NOT EXISTS `device`(

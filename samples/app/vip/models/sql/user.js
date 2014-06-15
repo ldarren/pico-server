@@ -1,8 +1,10 @@
 const
-GET = 'SELECT id, name FROM user WHERE createdBy IN (?);',
-CREATE = 'INSERT INTO user (name, about, createdBy, createdAt) VALUES (?, ?, ?, NOW());',
-UPDATE = 'UPDATE user SET ?;',
-REMOVE = 'UPDATE user SET status=0, updatedBy=?;';
+ALLOW_UPDATE = ['name', 'email', 'password'],
+GET = 'SELECT * FROM user WHERE id = ?;',
+GET_BY_EMAIL = 'SELECT * FROM user WHERE email = ?;',
+CREATE = 'INSERT INTO user (name, email, password, createdBy, createdAt) VALUES (?, ?, ?, ?, NOW());',
+UPDATE = 'UPDATE user SET ? WHERE id=?;',
+REMOVE = 'UPDATE user SET status=0, updatedBy=? WHERE id=?;';
 
 var client;
 
@@ -12,12 +14,16 @@ module.exports = {
         next();
     },
 
-    create: function(name, about, createdBy, cb){
-        client.query(CREATE, [name, about || null], createdBy, cb);
+    create: function(name, email, password, createdBy, cb){
+        client.query(CREATE, [name, email, password, createdBy], cb);
     },
 
-    read: function(arr, cb){
-        client.query(GET, [arr], cb);
+    read: function(userId, cb){
+        client.query(GET, [userId], cb);
+    },
+
+    readByEmail: function(email, cb){
+        client.query(GET, [email], cb);
     },
 
     update: function(changed, updatedBy, cb){
