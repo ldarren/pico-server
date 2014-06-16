@@ -2,7 +2,14 @@
     "app":{
         "name": "Sample Worker",
         "env": "dev",
-        "elements": ["app/vip/actions", "app/vip/models", "app/chat/actions", "app/chat/models"]
+        "elements": [
+            "app/vip/actions",
+            "app/vip/models",
+            "app/tracker/actions",
+            "app/tracker/models",
+            "app/chat/actions",
+            "app/chat/models"
+        ]
     },
     "lib":{
         "webServer":{
@@ -87,6 +94,14 @@
             "user":"root",
             "password":"root",
             "database":"vip"
+        },
+        "sqlTrackerJob":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"tracker"
         }
     }
 }

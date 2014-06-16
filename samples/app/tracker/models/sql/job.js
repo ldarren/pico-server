@@ -1,29 +1,29 @@
 const
 ALLOW_UPDATE = ['name', 'about'],
-GET = 'SELECT id, name FROM company WHERE createdBy IN (?);',
-GET_BY_NAME = 'SELECT id FROM company WHERE createdBy = ? AND name = ?;',
-CREATE = 'INSERT INTO company (name, about, createdBy, createdAt) VALUES (?, ?, ?, NOW());',
-UPDATE = 'UPDATE company SET ?;',
-REMOVE = 'UPDATE company SET status=0, updatedBy=?;';
+GET = 'SELECT * FROM job;',
+GET_BY_NAME = 'SELECT id FROM job WHERE createdBy = ? AND name = ?;',
+CREATE = 'INSERT INTO job SET ?;',
+UPDATE = 'UPDATE job SET ?;',
+REMOVE = 'UPDATE job SET status=0, updatedBy=?;';
 
 var client;
 
 module.exports = {
     setup: function(context, next){
-        client = context.sqlVIPCompany;
+        client = context.sqlTrackerJob;
         next();
     },
 
-    create: function(name, about, createdBy, cb){
-        client.query(CREATE, [name, about || null], createdBy, cb);
+    create: function(data, cb){
+        client.query(CREATE, [data], cb);
     },
 
     readByName: function(createdBy, name, cb){
         client.query(GET_BY_NAME, [createdBy, name], cb);
     },
 
-    read: function(arr, cb){
-        client.query(GET, [arr], cb);
+    read: function(start, end, cb){
+        client.query(GET, cb);
     },
 
     update: function(changed, updatedBy, cb){

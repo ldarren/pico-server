@@ -6,6 +6,8 @@ CREATE TABLE IF NOT EXISTS `job`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `caller` VARCHAR(64) NOT NULL,
     `mobile` VARCHAR(16) NOT NULL,
+    `date` DATE NOT NULL,
+    `time` TIME NOT NULL,
     `pickup` VARCHAR(255) NOT NULL,
     `dropoff` VARCHAR(255) NOT NULL,
     `driver` SMALLINT NOT NULL,
