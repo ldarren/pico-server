@@ -1,4 +1,4 @@
-CREATE DATABASE IF NOT EXISTS `tracker`;
+CREATE DATABASE IF NOT EXISTS `tracker` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
 
 USE `tracker`;
 
@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS `job`(
     `createdBy` BIGINT,
     `createdAt` DATETIME,
     PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `driver`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS `driver`(
     `createdBy` BIGINT,
     `createdAt` DATETIME,
     PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `vehicle`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `vehicle`(
     `createdBy` BIGINT,
     `createdAt` DATETIME,
     PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `jobType`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `jobType`(
     `createdBy` BIGINT,
     `createdAt` DATETIME,
     PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS `paymentType`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
@@ -68,4 +68,4 @@ CREATE TABLE IF NOT EXISTS `paymentType`(
     `createdBy` BIGINT,
     `createdAt` DATETIME,
     PRIMARY KEY (`id`)
-);
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
