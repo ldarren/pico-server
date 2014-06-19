@@ -7,7 +7,6 @@ CWD = '/var/node/sandbox/tracker/dat/public/'
 
 var
 DOCX = require('docxtemplater'),
-docx = new DOCX().loadFromFile(__dirname + '/../templ/invoice.docx'),
 sql = require('../models/sql/job')
 
 module.exports = {
@@ -15,19 +14,19 @@ module.exports = {
         var
         me = this,
         data = order.data
-console.log(data)
         if (!data.caller || !data.mobile || !data.date || !data.time || !data.driver || !data.vehicle || !data.pickup || !data.dropoff)
             return next(G_CERROR['400'])
 
-        sql.create(data, function(err, rows){
+        sql.create(data, function(err, result){
             if (err) return next(err)
-            if (rows.length) return next(G_CERROR['500'])
+
+            data['id'] = result.insertId
 
             var model = session.getModel(MODEL)
-            model[LIST] = {}
+            model[ME] = data
             session.addJob(
                 G_PICO_WEB.RENDER_FULL,
-                [[session.createModelInfo(MODEL, LIST)]]
+                [[session.createModelInfo(MODEL, ME)]]
             )
 
             next()
@@ -65,6 +64,7 @@ console.log(data)
     },
     docxOut: function(session, order, next){
         var
+        docx = new DOCX().loadFromFile(__dirname + '/../templ/invoice.docx'),
         model = session.getModel(MODEL),
         list = model[LIST],
         transact = [],
@@ -72,7 +72,7 @@ console.log(data)
         item
 
         for(var i=0,l=list.length; i<l; i++){
-            item = list[0]
+            item = list[i]
             total += item.charge
 
             transact.push({
@@ -85,7 +85,6 @@ console.log(data)
                 remarks: item.remarks || ''
             })
         }
-
         due = total - deposit;
 
         //setting the tags
