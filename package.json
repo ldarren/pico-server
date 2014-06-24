@@ -20,7 +20,9 @@
     "mysql": "",
     "node-riak-client": "",
     "pico-common": ">=0.0.10",
-    "redis": ""
+    "redis": "",
+    "apn":"1.5.2",
+    "node-gcm":"0.9.11"
   },
   "bugs": {
     "mail": "ldarren@gmail.com",

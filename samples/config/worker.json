@@ -102,6 +102,24 @@
             "user":"root",
             "password":"root",
             "database":"tracker"
+        },
+        "trackerNotifier":{
+            "mod":"notifier",
+            "senderId":"",
+            "retry":3,
+            "ttl":3600,
+            "delay":false
+        },
+        "vipNotifier":{
+            "mod":"notifier",
+            "senderId":"",
+            "cert":"",
+            "key":"",
+            "passphase":"",
+            "gateway":"",
+            "retry":3,
+            "ttl":3600,
+            "delay":false
         }
     }
 }
