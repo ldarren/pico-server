@@ -3,12 +3,12 @@
         "name": "Sample Worker",
         "env": "dev",
         "elements": [
-            "app/vip/actions",
             "app/vip/models",
-            "app/tracker/actions",
+            "app/vip/actions",
             "app/tracker/models",
-            "app/chat/actions",
-            "app/chat/models"
+            "app/tracker/actions",
+            "app/chat/models",
+            "app/chat/actions"
         ]
     },
     "lib":{
@@ -96,6 +96,14 @@
             "database":"vip"
         },
         "sqlTrackerJob":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"tracker"
+        },
+        "sqlTrackerDefault":{
             "mod":"mysql",
             "host":"localhost",
             "port":3306,

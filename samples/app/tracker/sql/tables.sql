@@ -6,12 +6,12 @@ SET storage_engine=INNODB;
 
 CREATE TABLE IF NOT EXISTS `field`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `module` VARCHAR(16) NOT NULL,
+    `order` TINYINT UNSIGNED NOT NULL,
+    `locale` VARCHAR(8) NOT NULL,
     `display` VARCHAR(32) NOT NULL,
     `name` VARCHAR(16) NOT NULL,
-    `locale` VARCHAR(8) NOT NULL,
-    `module` VARCHAR(16) NOT NULL,
     `type` TINYINT UNSIGNED NOT NULL,
-    `order` TINYINT UNSIGNED NOT NULL,
     `options` VARCHAR(16),
     `placeholder` VARCHAR(32),
     `pattern` VARCHAR(128),

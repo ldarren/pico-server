@@ -113,5 +113,7 @@ module.exports = {
 
         //apply the tags
         docx.applyTags()
+    },
+    xlsxOut: function(session, order, next){
     }
 }
