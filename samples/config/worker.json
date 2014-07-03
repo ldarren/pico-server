@@ -15,6 +15,7 @@
         "webServer":{
             "mod":"web",
             "allowOrigin":"*",
+            "delimiter":["&"],
             "port":4888
         },
         "chatUACollection":{
