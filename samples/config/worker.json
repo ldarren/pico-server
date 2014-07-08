@@ -3,6 +3,8 @@
         "name": "Sample Worker",
         "env": "dev",
         "elements": [
+            "app/studio/models",
+            "app/studio/actions",
             "app/vip/models",
             "app/vip/actions",
             "app/tracker/models",
@@ -16,6 +18,7 @@
             "mod":"web",
             "allowOrigin":"*",
             "delimiter":["&"],
+            "uploadWL":[],
             "port":4888
         },
         "chatUACollection":{
@@ -111,6 +114,14 @@
             "user":"root",
             "password":"root",
             "database":"tracker"
+        },
+        "sqlStudioProject":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"pico"
         },
         "trackerNotifier":{
             "mod":"notifier",

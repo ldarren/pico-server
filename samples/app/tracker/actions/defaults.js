@@ -9,7 +9,7 @@ sql = require('../models/sql/default'),
 fields, fieldTypes, consts
 
 module.exports = {
-    cache: function(){
+    setup: function(context, next){
         sql.readFieldTypes(function(err, result){
             if (err) return console.error(err)
             fieldTypes = result
@@ -22,6 +22,10 @@ module.exports = {
             if (err) return console.error(err)
             consts = result
         })
+
+        var web = context.webServer
+        web.route('tracker/defaults/read', [this.read])
+        next()
     },
     read: function(session, order, next){
         var model = session.getModel(MODEL)

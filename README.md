@@ -112,7 +112,8 @@ pico server must has one master process and zero to unlimited numbers of worker 
     "allowOrigin":"25.107.56.189:6666",
     "secretKey":"hashash",
     "cullAge":120000,
-    "delimiter":["crlf"]
+    "delimiter":["crlf"],
+    "uploadWL":["proj/mod/act1","proj/mod/act2"]
 },
 ```
 
@@ -123,3 +124,4 @@ pico server must has one master process and zero to unlimited numbers of worker 
 - secretKey: request hash key, optional, if not available, request hash will not be checked
 - cullAge: request time check, optional, if not available, +- 1 hour allowanceis given
 - delimiter: for client without ajax, delimiter can be added to separate response, optional
+- uploadWL: upload white list, api not in this list will be culled

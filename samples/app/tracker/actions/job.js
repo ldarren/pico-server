@@ -11,19 +11,16 @@ sql = require('../models/sql/job')
 
 module.exports = {
     create: function(session, order, next){
-        var
-        me = this,
-        data = order.data
-        if (!data.caller || !data.mobile || !data.date || !data.time || !data.driver || !data.vehicle || !data.pickup || !data.dropoff)
+        if (!order.caller || !order.mobile || !order.date || !order.time || !order.driver || !order.vehicle || !order.pickup || !order.dropoff)
             return next(G_CERROR['400'])
 
-        sql.create(data, function(err, result){
+        sql.create(order, function(err, result){
             if (err) return next(err)
 
-            data['id'] = result.insertId
+            order['id'] = result.insertId
 
             var model = session.getModel(MODEL)
-            model[ME] = data
+            model[ME] = order
             session.addJob(
                 G_PICO_WEB.RENDER_FULL,
                 [[session.createModelInfo(MODEL, ME)]]
@@ -33,8 +30,7 @@ module.exports = {
         })
     },
     read: function(session, order, next){
-        var data = order.data
-        sql.read(data.start, data.end, function(err, result){
+        sql.read(order.start, order.end, function(err, result){
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
@@ -44,7 +40,7 @@ module.exports = {
         })
     },
     remove: function(session, order, next){
-        sql.remove(order.data.id, function(err, result){
+        sql.remove(order.id, function(err, result){
             if (err) return next(err)
 
             session.addJob(
