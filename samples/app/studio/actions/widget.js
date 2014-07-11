@@ -4,16 +4,17 @@ ME = 'me',
 LIST = 'list'
 
 var
+common = require('./common'),
 sql = require('../models/sql/widget')
 
 module.exports = {
     setup: function(context, next){
         var web = context.webServer
 
-        web.route('pico/widget/create', [this.create])
+        web.route('pico/widget/create', [common.stringify, this.create])
         web.route('pico/widget/list', [this.list])
-        web.route('pico/widget/read', [this.read])
-        web.route('pico/widget/update', [this.update])
+        web.route('pico/widget/read', [this.read, common.parse])
+        web.route('pico/widget/update', [common.stringify, this.update])
         web.route('pico/widget/remove', [this.remove])
 
         next()
@@ -62,6 +63,9 @@ module.exports = {
                 G_PICO_WEB.RENDER_FULL,
                 [[session.createModelInfo(MODEL, ME)]]
             )
+
+            model = session.getModel('common')
+            model[MODEL] = ME
 
             next()
         })

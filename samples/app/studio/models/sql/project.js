@@ -36,7 +36,7 @@ module.exports = {
             params[key] = data[key]
         }
         if (!Object.keys(params).length) return cb(G_CERROR['400'])
-        client.query(UPDATE, [params], cb)
+        client.query(UPDATE, [params, data.id], cb)
     },
 
     remove: function(id, cb){

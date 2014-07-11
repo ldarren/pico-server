@@ -81,6 +81,7 @@ module.exports = {
     },
     remove: function(session, order, next){
         if (!order.id) return next(G_CERROR['400'])
+
         sql.remove(order.id, function(err, result){
             if (err) return next(err)
 

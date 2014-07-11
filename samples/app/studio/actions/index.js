@@ -10,6 +10,7 @@ router = {
 
 module.exports = [
     router,
+    require('./constant'),
     require('./project'),
     require('./widget'),
 ]
