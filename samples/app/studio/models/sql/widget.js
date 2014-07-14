@@ -1,6 +1,6 @@
 const
 ALLOW_UPDATE = ['name', 'json'],
-LIST = 'SELECT id, name FROM widget;',
+LIST = 'SELECT id, name, json FROM widget;',
 GET = 'SELECT json FROM widget WHERE id=?;',
 CREATE = 'INSERT INTO widget SET ?;',
 UPDATE = 'UPDATE widget SET ? WHERE id=?;',

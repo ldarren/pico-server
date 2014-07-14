@@ -12,7 +12,7 @@ module.exports = {
         var web = context.webServer
 
         web.route('pico/widget/create', [common.stringify, this.create])
-        web.route('pico/widget/list', [this.list])
+        web.route('pico/widget/list', [this.list, common.parse])
         web.route('pico/widget/read', [this.read, common.parse])
         web.route('pico/widget/update', [common.stringify, this.update])
         web.route('pico/widget/remove', [this.remove])
@@ -46,6 +46,9 @@ module.exports = {
                 G_PICO_WEB.RENDER_FULL,
                 [[session.createModelInfo(MODEL, LIST)]]
             )
+
+            model = session.getModel('common')
+            model[MODEL] = LIST
 
             next()
         })
