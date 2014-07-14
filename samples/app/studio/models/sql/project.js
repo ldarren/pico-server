@@ -2,6 +2,7 @@ const
 ALLOW_UPDATE = ['name', 'json'],
 LIST = 'SELECT id, name FROM project;',
 GET = 'SELECT json FROM project WHERE id=?;',
+GET_BY_NAME = 'SELECT json FROM project WHERE name=?;',
 CREATE = 'INSERT INTO project SET ?;',
 UPDATE = 'UPDATE project SET ? WHERE id=?;',
 REMOVE = 'UPDATE project SET status=0 WHERE id=?;'
@@ -24,6 +25,10 @@ module.exports = {
 
     read: function(id, cb){
         client.query(GET, [id], cb)
+    },
+
+    readByName: function(name, cb){
+        client.query(GET_BY_NAME, [name], cb)
     },
 
     update: function(data, cb){

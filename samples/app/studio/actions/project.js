@@ -51,9 +51,13 @@ module.exports = {
         })
     },
     read: function(session, order, next){
-        if (!order.id) return next(G_CERROR['400'])
+        var
+        id = order.id,
+        name = order.name
 
-        sql.read(order.id, function(err, result){
+        if (!id && !name) return next(G_CERROR['400'])
+
+        var go = function(err, result){
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
@@ -68,7 +72,10 @@ module.exports = {
             model[MODEL] = ME
 
             next()
-        })
+        }
+
+        if (id) sql.read(id, go)
+        else sql.readByName(name, go)
     },
     update: function(session, order, next){
         if (!order.id) return next(G_CERROR['400'])
