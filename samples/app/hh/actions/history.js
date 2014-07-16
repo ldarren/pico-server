@@ -1,23 +1,33 @@
 const
-MODEL = 'project',
+MODEL = 'history',
 ME = 'me',
 LIST = 'list'
 
-var
-common = require('./common')
-sql = require('../models/sql/project')
+var sql = require('../models/sql/history')
 
 module.exports = {
     setup: function(context, next){
         var web = context.webServer
 
-        web.route('pico/project/create', [common.stringify, this.create])
-        web.route('pico/project/list', [this.list])
-        web.route('pico/project/read', [this.read, common.parse])
-        web.route('pico/project/update', [common.stringify, this.update])
-        web.route('pico/project/remove', [this.remove])
+        web.route('hh/history/create', [this.create])
+        web.route('hh/history/list', [this.list])
+        web.route('hh/history/read', [this.read])
+        web.route('hh/history/update', [this.update])
+        web.route('hh/history/remove', [this.remove])
 
         next()
+    },
+    byDoctor: function(session, order, next){
+        if (!order.doctorId) return next(G_CERROR['400'])
+
+        sql.byDoctor(order.doctorId, function(err, result){
+            if (err) return next(err)
+
+            var model = session.getModel(MODEL)
+            model[MODEL] = result
+
+            next()
+        })
     },
     create: function(session, order, next){
         if (!order.name || !order.json) return next(G_CERROR['400'])
@@ -51,15 +61,10 @@ module.exports = {
         })
     },
     read: function(session, order, next){
-        var
-        id = order.id,
-        name = order.name
+        if (!order.id) return next(G_CERROR['400'])
 
-        if (!id && !name) return next(G_CERROR['400'])
-
-        var go = function(err, result){
+        sql.read(order.id, function(err, result){
             if (err) return next(err)
-            if (!result.length) return next(G_CERROR['400'])
 
             var model = session.getModel(MODEL)
             model[ME] = result[0]
@@ -69,14 +74,8 @@ module.exports = {
                 [[session.createModelInfo(MODEL, ME)]]
             )
 
-            model = session.getModel('common')
-            model[MODEL] = ME
-
             next()
-        }
-
-        if (id) sql.read(id, go)
-        else sql.readByName(name, go)
+        })
     },
     update: function(session, order, next){
         if (!order.id) return next(G_CERROR['400'])
@@ -93,7 +92,6 @@ module.exports = {
     },
     remove: function(session, order, next){
         if (!order.id) return next(G_CERROR['400'])
-
         sql.remove(order.id, function(err, result){
             if (err) return next(err)
 

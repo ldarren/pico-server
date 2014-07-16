@@ -10,7 +10,9 @@
             "app/tracker/models",
             "app/tracker/actions",
             "app/chat/models",
-            "app/chat/actions"
+            "app/chat/actions",
+            "app/hh/models",
+            "app/hh/actions"
         ]
     },
     "lib":{
@@ -122,6 +124,14 @@
             "user":"root",
             "password":"root",
             "database":"pico"
+        },
+        "sqlHH":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"hh"
         },
         "trackerNotifier":{
             "mod":"notifier",

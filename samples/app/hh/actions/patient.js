@@ -1,23 +1,35 @@
 const
-MODEL = 'project',
+MODEL = 'patient',
 ME = 'me',
 LIST = 'list'
 
 var
-common = require('./common')
-sql = require('../models/sql/project')
+common = require('./common'),
+sql = require('../models/sql/patient')
 
 module.exports = {
     setup: function(context, next){
         var web = context.webServer
 
-        web.route('pico/project/create', [common.stringify, this.create])
-        web.route('pico/project/list', [this.list])
-        web.route('pico/project/read', [this.read, common.parse])
-        web.route('pico/project/update', [common.stringify, this.update])
-        web.route('pico/project/remove', [this.remove])
+        web.route('hh/patient/create', [this.create])
+        web.route('hh/patient/list', [this.list])
+        web.route('hh/patient/read', [this.read])
+        web.route('hh/patient/update', [this.update])
+        web.route('hh/patient/remove', [this.remove])
 
         next()
+    },
+    byIssue: function(session, order, next){
+        sql.byList(common.pluck(session.getModel('issue')['issue'], 'patientId'), function(err, result){
+            if (err) return next(err)
+            var model = session.getModel(MODEL)
+            model[MODEL] = result
+            session.addJob(
+                G_PICO_WEB.RENDER_FULL,
+                [[session.createModelInfo(MODEL, MODEL)]]
+            )
+            next()
+        })
     },
     create: function(session, order, next){
         if (!order.name || !order.json) return next(G_CERROR['400'])
@@ -59,7 +71,6 @@ module.exports = {
 
         var go = function(err, result){
             if (err) return next(err)
-            if (!result.length) return next(G_CERROR['400'])
 
             var model = session.getModel(MODEL)
             model[ME] = result[0]
@@ -68,9 +79,6 @@ module.exports = {
                 G_PICO_WEB.RENDER_FULL,
                 [[session.createModelInfo(MODEL, ME)]]
             )
-
-            model = session.getModel('common')
-            model[MODEL] = ME
 
             next()
         }
