@@ -1,7 +1,7 @@
 const
-ALLOW_UPDATE = ['patientId', 'doctorId', 'reportId', 'issueId'],
-BY_PATIENT = 'SELECT id, patientId, doctorId, reportId, issueId, createdAt FROM history WHERE patientId=? AND status=1;',
-GET = 'SELECT id, patientId, doctorId, reportId, issueId, createdAt, status FROM history WHERE id=?;',
+ALLOW_UPDATE = ['patientId', 'doctorId', 'resultId', 'issueId'],
+BY_PATIENT = 'SELECT id, patientId, doctorId, resultId, issueId, createdAt FROM history WHERE patientId=? AND status=1;',
+GET = 'SELECT id, patientId, doctorId, resultId, issueId, createdAt, status FROM history WHERE id=?;',
 CREATE = 'INSERT INTO history SET ?;',
 UPDATE = 'UPDATE history SET ? WHERE id=?;',
 REMOVE = 'UPDATE history SET status=0 WHERE id=?;'

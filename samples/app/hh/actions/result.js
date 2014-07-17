@@ -31,7 +31,7 @@ module.exports = {
             next()
         })
     },
-    byIssue: function(session, order, next){
+    byHistory: function(session, order, next){
         sql.byList(common.pluck(session.getModel('history')['history'], 'resultId'), function(err, result){
             if (err) return next(err)
             var model = session.getModel(MODEL)

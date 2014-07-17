@@ -40,7 +40,7 @@ INSERT INTO `result` (`issueId`, `desc`) VALUES
 (5, 'SY Test Negative'),
 (6, 'CE Test Negative');
 
-INSERT INTO `history` (`patientId`, `doctorId`, `reportId`, `issueId`) VALUES
+INSERT INTO `history` (`patientId`, `doctorId`, `resultId`, `issueId`) VALUES
 (1, 1, 6, 1),
 (2, 1, 5, 2),
 (3, 1, 4, 3),
