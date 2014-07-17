@@ -3,7 +3,9 @@ MODEL = 'issue',
 ME = 'me',
 LIST = 'list'
 
-var sql = require('../models/sql/issue')
+var
+common = require('./common'),
+sql = require('../models/sql/issue')
 
 module.exports = {
     setup: function(context, next){

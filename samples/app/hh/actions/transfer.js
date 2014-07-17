@@ -24,6 +24,11 @@ module.exports = {
             var model = session.getModel(MODEL)
             model[MODEL] = result
 
+            session.addJob(
+                G_PICO_WEB.RENDER_FULL,
+                [[session.createModelInfo(MODEL, MODEL)]]
+            )
+
             next()
         })
     },
