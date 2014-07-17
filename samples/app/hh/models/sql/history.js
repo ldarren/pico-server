@@ -1,8 +1,7 @@
 const
-ALLOW_UPDATE = ['patientId', 'doctorId', 'reportId'],
-LIST = 'SELECT id, patientId, doctorId, reportId FROM history WHERE status=1 LIMIT 100;',
-BY_DOCTOR = 'SELECT id, patientId, doctorId, reportId FROM history WHERE doctorId=? AND status=1;',
-GET = 'SELECT json FROM history WHERE id=?;',
+ALLOW_UPDATE = ['patientId', 'doctorId', 'reportId', 'issueId'],
+BY_PATIENT = 'SELECT id, patientId, doctorId, reportId, issueId, createdAt FROM history WHERE patientId=? AND status=1;',
+GET = 'SELECT id, patientId, doctorId, reportId, issueId, createdAt, status FROM history WHERE id=?;',
 CREATE = 'INSERT INTO history SET ?;',
 UPDATE = 'UPDATE history SET ? WHERE id=?;',
 REMOVE = 'UPDATE history SET status=0 WHERE id=?;'
@@ -19,12 +18,8 @@ module.exports = {
         client.query(CREATE, [data], cb)
     },
 
-    list: function(cb){
-        client.query(LIST, cb)
-    },
-
-    byDoctor: function(doctorId, cb){
-        client.query(BY_DOCTOR, [doctorId], cb)
+    byPatient: function(patientId, cb){
+        client.query(BY_PATIENT, [patientId], cb)
     },
 
     read: function(id, cb){

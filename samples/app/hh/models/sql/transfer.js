@@ -1,8 +1,8 @@
 const
-ALLOW_UPDATE = ['issueId', 'doctorId'],
-LIST = 'SELECT id, issueId, doctorId FROM transfer WHERE status=1 LIMIT 100;',
-BY_DOCTOR = 'SELECT id, issueId, doctorId FROM transfer WHERE doctorId=? AND status=1;',
-GET = 'SELECT json FROM transfer WHERE id=?;',
+ALLOW_UPDATE = ['issueId', 'requestedId', 'requesterId'],
+LIST = 'SELECT id, issueId, requestedId, requesterId FROM transfer WHERE status=1 LIMIT 100;',
+BY_DOCTOR = 'SELECT id, issueId, requestedId, requesterId FROM transfer WHERE requestedId=? AND status=1;',
+GET = 'SELECT id, issueId, requestedId, requesterId, status FROM transfer WHERE id=?;',
 CREATE = 'INSERT INTO transfer SET ?;',
 UPDATE = 'UPDATE transfer SET ? WHERE id=?;',
 REMOVE = 'UPDATE transfer SET status=0 WHERE id=?;'

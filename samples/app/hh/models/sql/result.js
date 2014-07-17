@@ -1,8 +1,8 @@
 const
 ALLOW_UPDATE = ['desc', 'issueId'],
-LIST = 'SELECT id, `desc`, issueId FROM result WHERE status=1;',
-BY_LIST = 'SELECT id, `desc`, issueId FROM result WHERE issueId IN (?) AND status=1;',
-GET = 'SELECT json FROM result WHERE id=?;',
+LIST = 'SELECT id, `desc`, issueId, createdAt FROM result WHERE status=1;',
+BY_LIST = 'SELECT id, `desc`, issueId, `createdAt` FROM result WHERE issueId IN (?) AND status=1;',
+GET = 'SELECT `desc`, issueId, `createdAt`, status FROM result WHERE id=?;',
 GET_BY_NAME = 'SELECT json FROM result WHERE name=?;',
 CREATE = 'INSERT INTO result SET ?;',
 UPDATE = 'UPDATE result SET ? WHERE id=?;',
@@ -25,6 +25,7 @@ module.exports = {
     },
 
     byList: function(list, cb){
+        if (!list.length) return cb(null, [])
         client.query(BY_LIST, [list], cb)
     },
 

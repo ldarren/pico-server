@@ -1,6 +1,6 @@
 const
 WARD = 'SELECT id, name, specialty, subSpecialty FROM ward;',
-DOCTOR = 'SELECT id, name FROM doctor;'
+DOCTOR = 'SELECT id, name, ic FROM doctor;'
 
 var client
 

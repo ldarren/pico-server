@@ -31,6 +31,18 @@ module.exports = {
             next()
         })
     },
+    byIssue: function(session, order, next){
+        sql.byList(common.pluck(session.getModel('history')['history'], 'resultId'), function(err, result){
+            if (err) return next(err)
+            var model = session.getModel(MODEL)
+            model[MODEL] = result
+            session.addJob(
+                G_PICO_WEB.RENDER_FULL,
+                [[session.createModelInfo(MODEL, MODEL)]]
+            )
+            next()
+        })
+    },
     create: function(session, order, next){
         if (!order.name || !order.json) return next(G_CERROR['400'])
 

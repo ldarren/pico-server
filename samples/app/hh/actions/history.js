@@ -10,21 +10,24 @@ module.exports = {
         var web = context.webServer
 
         web.route('hh/history/create', [this.create])
-        web.route('hh/history/list', [this.list])
         web.route('hh/history/read', [this.read])
         web.route('hh/history/update', [this.update])
         web.route('hh/history/remove', [this.remove])
 
         next()
     },
-    byDoctor: function(session, order, next){
-        if (!order.doctorId) return next(G_CERROR['400'])
+    byPatient: function(session, order, next){
+        if (!order.patientId) return next(G_CERROR['400'])
 
-        sql.byDoctor(order.doctorId, function(err, result){
+        sql.byPatient(order.patientId, function(err, result){
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
             model[MODEL] = result
+            session.addJob(
+                G_PICO_WEB.RENDER_FULL,
+                [[session.createModelInfo(MODEL, MODEL)]]
+            )
 
             next()
         })
@@ -40,21 +43,6 @@ module.exports = {
             session.addJob(
                 G_PICO_WEB.RENDER_FULL,
                 [[session.createModelInfo(MODEL, ME)]]
-            )
-
-            next()
-        })
-    },
-    list: function(session, order, next){
-        sql.list(function(err, result){
-            if (err) return next(err)
-
-            var model = session.getModel(MODEL)
-            model[LIST] = result
-
-            session.addJob(
-                G_PICO_WEB.RENDER_FULL,
-                [[session.createModelInfo(MODEL, LIST)]]
             )
 
             next()

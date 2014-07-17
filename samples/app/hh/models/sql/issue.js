@@ -29,6 +29,7 @@ module.exports = {
     },
 
     byList: function(list, cb){
+        if (!list.length) return cb(null, [])
         client.query(BY_LIST, [list], cb)
     },
 
