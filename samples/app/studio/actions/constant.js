@@ -1,17 +1,17 @@
 const
 MODEL = 'constant',
-FIELD = 'field'
+SPEC = 'spec'
 
 var
 common = require('./common'),
 sql = require('../models/sql/constant'),
-field
+spec
 
 module.exports = {
     setup: function(context, next){
-        sql.field(function(err, result){
+        sql.spec(function(err, result){
             if (err) return console.error(err)
-            field = common.parseAll(result)
+            spec = common.parseAll(result)
         })
 
         var web = context.webServer
@@ -22,11 +22,11 @@ module.exports = {
     },
     list: function(session, order, next){
         var model = session.getModel(MODEL)
-        model[FIELD] = field
+        model[SPEC] = spec
 
         session.addJob(
             G_PICO_WEB.RENDER_FULL,
-            [[session.createModelInfo(MODEL, FIELD)]]
+            [[session.createModelInfo(MODEL, SPEC)]]
         )
 
         next()

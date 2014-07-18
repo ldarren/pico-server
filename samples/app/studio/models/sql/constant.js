@@ -1,5 +1,5 @@
 const
-FIELD = 'SELECT id, name, json FROM field;'
+SPEC = 'SELECT id, name, json FROM spec;'
 
 var client
 
@@ -9,7 +9,7 @@ module.exports = {
         next()
     },
 
-    field: function(cb){
-        client.query(FIELD, cb)
+    spec: function(cb){
+        client.query(SPEC, cb)
     },
 }

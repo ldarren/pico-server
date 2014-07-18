@@ -4,7 +4,7 @@ USE `pico`;
 
 SET storage_engine=INNODB;
 
-CREATE TABLE IF NOT EXISTS `field`(
+CREATE TABLE IF NOT EXISTS `spec`(
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(64) NOT NULL,
     `json` VARCHAR(512) NOT NULL,
