@@ -2,8 +2,9 @@ USE `pico`;
 
 INSERT INTO `spec` (`name`, `json`) VALUES
 ('ref',         '{"name":"","type":"ref","value":""}'),
+('refs',        '{"name":"","type":"refs","value":""}'),
 ('model',       '{"name":"","type":"model","value":"","param":0}'),
-('models',      '{"name":"","type":"models","value":{"list":"","create":"","read":"","update":"","delete":""}}'),
+('models',      '{"name":"","type":"models","value":{"list":"","create":"","read":"","update":"","delete":"","preload":false}}'),
 ('param',       '{"name":"","type":"param","value":0}'),
 ('text',        '{"name":"","type":"text","value":""}'),
 ('number',      '{"name":"","type":"number","value":0}'),
