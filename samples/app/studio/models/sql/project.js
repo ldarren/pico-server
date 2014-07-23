@@ -1,6 +1,6 @@
 const
-ALLOW_UPDATE = ['name', 'json'],
-LIST = 'SELECT id, name FROM project;',
+ALLOW_UPDATE = ['name', 'json', 'status'],
+LIST = 'SELECT id, name FROM project WHERE status=1;',
 GET = 'SELECT json FROM project WHERE id=?;',
 GET_BY_NAME = 'SELECT json FROM project WHERE name=?;',
 CREATE = 'INSERT INTO project SET ?;',
