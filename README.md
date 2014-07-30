@@ -6,11 +6,15 @@ A lean and mean realtime api server
 
 Features
 ========
-* two channel design, push and pull channel to achieve fast and realtime http server
-* data cache to prevent data lost (WIP)
+* mean in functionality for api server and api server only, create an api server by a config file and app sepcific api and model scripts
+* lean in process, request parsing, action routing, session handling, data loss management, logging and response rendering all in one file
+* app level database transaction
+* action and model separation to promote code reuse
+* data cache to prevent data lost
+* unique protocol design for data channel and handle large json data without unnessary parsing and stringify
 * efficent user session handling, session only persistence when pull channel dc
-* supported bath requests 
-* server stream data to client through push channel
+* supported chained requests 
+* two channel design, push and pull channel to achieve fast and realtime http server (WIP)
 
 Installation
 ============
