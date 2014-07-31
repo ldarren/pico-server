@@ -1,5 +1,4 @@
-const
-MODEL = 'common'
+const MODEL = 'common'
 
 var common
 

@@ -31,10 +31,7 @@ module.exports = {
         model[WARD] = ward
         model[DOCTOR] = doctor 
 
-        session.addJob(
-            G_PICO_WEB.RENDER_FULL,
-            [[session.createModelInfo(MODEL, WARD)],[session.createModelInfo(MODEL, DOCTOR)]]
-        )
+        session.addJob( [session.subJob(MODEL, WARD),session.subJob(MODEL, DOCTOR)])
 
         next()
     },
@@ -42,10 +39,7 @@ module.exports = {
         var model = session.getModel(MODEL)
         model[DOCTOR] = doctor 
 
-        session.addJob(
-            G_PICO_WEB.RENDER_FULL,
-            [[session.createModelInfo(MODEL, DOCTOR)]]
-        )
+        session.addJob( [session.subJob(MODEL, DOCTOR)])
 
         next()
     },
@@ -53,10 +47,7 @@ module.exports = {
         var model = session.getModel(MODEL)
         model[WARD] = ward
 
-        session.addJob(
-            G_PICO_WEB.RENDER_FULL,
-            [[session.createModelInfo(MODEL, WARD)]]
-        )
+        session.addJob( [session.subJob(MODEL, WARD)])
 
         next()
     }

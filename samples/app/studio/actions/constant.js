@@ -24,10 +24,7 @@ module.exports = {
         var model = session.getModel(MODEL)
         model[SPEC] = spec
 
-        session.addJob(
-            G_PICO_WEB.RENDER_FULL,
-            [[session.createModelInfo(MODEL, SPEC)]]
-        )
+        session.addJob([session.subJob(MODEL, SPEC)])
 
         next()
     }

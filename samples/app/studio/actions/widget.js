@@ -1,7 +1,4 @@
-const
-MODEL = 'widget',
-ME = 'me',
-LIST = 'list'
+const MODEL = 'widget'
 
 var
 common = require('./common'),
@@ -26,11 +23,8 @@ module.exports = {
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
-            model[ME] = {id: result.insertId}
-            session.addJob(
-                G_PICO_WEB.RENDER_FULL,
-                [[session.createModelInfo(MODEL, ME)]]
-            )
+            model[MODEL] = {id: result.insertId}
+            session.addJob( [session.subJob(MODEL, MODEL)])
 
             next()
         })
@@ -40,15 +34,12 @@ module.exports = {
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
-            model[LIST] = result
+            model[MODEL] = result
 
-            session.addJob(
-                G_PICO_WEB.RENDER_FULL,
-                [[session.createModelInfo(MODEL, LIST)]]
-            )
+            session.addJob( [session.subJob(MODEL, MODEL)])
 
             model = session.getModel('common')
-            model[MODEL] = LIST
+            model[MODEL] = MODEL
 
             next()
         })
@@ -60,15 +51,12 @@ module.exports = {
             if (err) return next(err)
 
             var model = session.getModel(MODEL)
-            model[ME] = result[0]
+            model[MODEL] = result[0]
 
-            session.addJob(
-                G_PICO_WEB.RENDER_FULL,
-                [[session.createModelInfo(MODEL, ME)]]
-            )
+            session.addJob( [session.subJob(MODEL, MODEL)])
 
             model = session.getModel('common')
-            model[MODEL] = ME
+            model[MODEL] = MODEL
 
             next()
         })
@@ -79,10 +67,6 @@ module.exports = {
         sql.update(order, function(err, result){
             if (err) return next(err)
 
-            session.addJob(
-                G_PICO_WEB.RENDER_HEADER
-            )
-
             next()
         })
     },
@@ -90,10 +74,6 @@ module.exports = {
         if (!order.id) return next(G_CERROR['400'])
         sql.remove(order.id, function(err, result){
             if (err) return next(err)
-
-            session.addJob(
-                G_PICO_WEB.RENDER_HEADER
-            )
 
             next()
         })
