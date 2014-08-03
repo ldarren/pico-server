@@ -11,12 +11,12 @@ module.exports = {
     setup: function(context, next){
         sql.spec(function(err, result){
             if (err) return console.error(err)
-            spec = common.parseAll(result)
+            spec = result
         })
 
         var web = context.webServer
 
-        web.route('pico/constant/list', [this.list, common.parse])
+        web.route('pico/constant/list', [this.list])
 
         next()
     },
