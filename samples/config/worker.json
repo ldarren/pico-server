@@ -45,6 +45,12 @@
             "database":10,
             "options":{}
         },
+        "memStore":{
+            "mod":"memcached",
+            "server":["localhost:11211"],
+            "container":"store",
+            "options":{}
+        },
         "sqlVIPCompany":{
             "mod":"mysql",
             "host":"localhost",

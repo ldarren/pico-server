@@ -4,12 +4,12 @@ SPEC = 'spec'
 
 var
 common = require('./common'),
-sql = require('../models/sql/constant'),
+mem = require('../models/mem/constant'),
 spec
 
 module.exports = {
     setup: function(context, next){
-        sql.spec(function(err, result){
+        mem.spec(function(err, result){
             if (err) return console.error(err)
             spec = result
         })
@@ -21,8 +21,7 @@ module.exports = {
         next()
     },
     list: function(session, order, next){
-        var model = session.getModel(MODEL)
-        model[SPEC] = spec
+        session.getModel(MODEL)[SPEC] = spec
 
         session.addJob([session.subJob(MODEL, SPEC)])
 

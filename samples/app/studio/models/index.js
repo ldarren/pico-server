@@ -1,7 +1,8 @@
 module.exports = [
     require('./redis/channelStorage'),
 
-    require('./sql/constant'),
+    require('./mem/constant'),
+
     require('./sql/project'),
     require('./sql/widget'),
 ];

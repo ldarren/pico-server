@@ -17,6 +17,7 @@ module.exports = {
         next()
     },
     create: function(session, order, next){
+console.log(order)
         if (!order.name || !order.json) return next(G_CERROR['400'])
 
         sql.create(order, function(err, result){

@@ -1,6 +1,6 @@
 {
   "name": "pico-server",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "main": "./index",
   "description": "A lean and mean realtime api server",
   "keywords": [
@@ -17,12 +17,13 @@
   },
   "dependencies": {
     "hiredis": "",
+    "redis": "",
+    "memcached":"",
     "mysql": "",
     "node-riak-client": "",
-    "pico-common": ">=0.0.10",
-    "redis": "",
     "apn":"1.5.2",
-    "node-gcm":"0.9.11"
+    "node-gcm":"0.9.11",
+    "pico-common": ">=0.0.10"
   },
   "bugs": {
     "mail": "ldarren@gmail.com",
