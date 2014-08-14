@@ -4,7 +4,7 @@ SPEC = 'spec'
 
 var
 common = require('./common'),
-mem = require('../models/mem/constant'),
+mem = require('../models/sql/constant'),
 spec
 
 module.exports = {

@@ -1,11 +1,8 @@
-var
-client,
-rule
+var client
 
 module.exports = {
     setup: function(context, next){
         client = context.memStore
-        rule = client.read(context.rule)
         next()
     },
 
