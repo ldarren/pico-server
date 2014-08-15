@@ -5,22 +5,16 @@ USE `pico`;
 SET storage_engine=INNODB;
 
 CREATE TABLE IF NOT EXISTS `store`(
-    `id` VARCHAR(256) NOT NULL,
+    `path` VARCHAR(256) NOT NULL,
+    `dir` VARCHAR(255),
     `json` TEXT NOT NULL,
+    `rule` INT UNSIGNED DEFAULT 0 COMMENT 'byte:creator|group|public, value:0=disabled|list=1|read=2|update=4|create/delete=8',
+    `userId` BIGINT DEFAULT 0,
+    `groupId` BIGINT DEFAULT 0,
+    `updatedAt` INT(11) NOT NULL,
+    `createdAt` INT(11) NOT NULL,
     `flags` INT(11) DEFAULT 0,
     `cas` BIGINT(20) UNSIGNED DEFAULT 0,
     `ttl` INT(11) DEFAULT 0,
-    `status` TINYINT DEFAULT 1,
-    `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
-);
-
-CREATE TABLE IF NOT EXISTS `rule`(
-    `id` VARCHAR(256) NOT NULL,
-    `json` TEXT NOT NULL,
-    `status` TINYINT DEFAULT 1,
-    `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`path`)
 );
