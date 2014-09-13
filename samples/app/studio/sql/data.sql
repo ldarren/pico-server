@@ -14,5 +14,5 @@ INSERT INTO `store` (`id`, `json`) VALUES
 ('pico/spec/text',        '{"name":"","type":"text","value":""}'),
 ('pico/spec/number',      '{"name":"","type":"number","value":0}'),
 ('pico/spec/datetime',    '{"name":"","type":"datetime","value":"2014-07-18T09:18:36.385Z"}'),
-('pico/spec/select',      '{"name":"","type":"select","value":[]}'),
-('pico/spec/selects',     '{"name":"","type":"selects","value":[]}');
+('pico/spec/list',        '{"name":"","type":"list","value":[]}'),
+('pico/spec/map',         '{"name":"","type":"map","value":{}}');
