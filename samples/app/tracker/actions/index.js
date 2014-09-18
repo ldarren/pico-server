@@ -4,7 +4,7 @@ all = {
     setup: function(context, next){
         var web = context.webServer
 
-        web.route('tk/user/create', [user.create])
+        web.route('tr/user/read', [user.read])
         next()
     }
 }
