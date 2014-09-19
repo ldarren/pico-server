@@ -1,6 +1,6 @@
 {
     "app":{
-        "name": "Pico Master",
+        "name": "Sample Master",
         "env": "dev",
         "elements": []
     },

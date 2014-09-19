@@ -1,12 +1,52 @@
 const
-CREATE = 'INSERT INTO `data` (?) VALUES ?;'
+GET = 'SELECT * FROM data WHERE id=?;',
+GET_SEEN = 'SELECT * FROM data WHERE seenAt > ?;',
+GET_NEW = 'SELECT * FROM data WHERE updatedAt > ?;',
+CREATE = 'INSERT INTO data (type, createdBy) VALUES ?;',
+TOUCH = 'UPDATE data SET updatedBy=?, updatedAt=NOW() WHERE id=?;',
+SEEN = 'UPDATE data SET seen=seen+1, seenAt=NOW() WHERE id=?;',
+REMOVE = 'UPDATE data SET status=0, updatedBy=?, updatedBy=NOW() WHERE id=?;'
 
-var client
+var
+common = require('../../../../lib/common'),
+client, KEYS, IDS
 
 module.exports = {
     setup: function(context, next){
+        client = context.sqlTracker
+        var k = require('./key')
+        KEYS = k.keys()
+        IDS = k.ids()
+        next()
     },
-    create: function(data, cb){
-        client.query(CREATE, data, cb)
+    create: function(type, by, cb){
+        client.query(CREATE, [IDS[type], by], cb)
+    },
+    touch: function(id, by, cb){
+        client.query(TOUCH, [by, id], cb)
+    },
+    seen: function(id, cb){
+        client.query(SEEN, [id], cb)
+    },
+    remove: function(id, by, cb){
+        client.query(REMOVE, [by, id], cb)
+    },
+    get: function(id, cb){
+        client.query(GET, [id], function(err, result){
+            if (err) return cb(err)
+            return (null, common.replace(result, KEYS, 'type'))
+        })
+    },
+    getSeen: function(at, cb){
+        client.query(GET_SEEN, [at], function(err, result){
+            if (err) return cb(err)
+            return (null, common.replace(result, KEYS, 'type'))
+        })
+    },
+    getNew: function(at, cb){
+        client.query(GET_NEW, [at], function(err, result){
+            if (err) return cb(err)
+            return (null, common.replace(result, KEYS, 'type'))
+        })
     }
 }
