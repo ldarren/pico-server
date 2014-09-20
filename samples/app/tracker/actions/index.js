@@ -4,7 +4,8 @@ all = {
     setup: function(context, next){
         var web = context.webServer
 
-        web.route('tr/user/read', [user.read])
+        web.route('tr/user/signin', [user.signin])
+        web.route('tr/user/signup', [user.signup])
         next()
     }
 }

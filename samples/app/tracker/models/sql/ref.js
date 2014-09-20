@@ -1,10 +1,10 @@
 const
-GET = 'SELECT * FROM ref WHERE dataId=?;',
-GET_VAL = 'SELECT * FROM ref WHERE dataId=? AND refId=?;',
-GET_NEW = 'SELECT * FROM ref WHERE refId=? AND updatedAt > ?;',
-SET = 'INSERT INTO ref (dataId, refId, val, createdBy) VALUES ? ON DUPLICATE KEY UPDATE val=VALUES(val), updatedBy=VALUES(createdBy);',
-TOUCH = 'UPDATE ref SET updatedBy=?, updatedAt=NOW() WHERE dataId=? AND refId=?;',
-REMOVE = 'UPDATE ref SET status=0, updatedBy=?, updatedBy=NOW() WHERE dataId=? AND refId=?;'
+GET = 'SELECT * FROM `ref` WHERE `dataId`=?;',
+GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? AND `refId`=?;',
+GET_NEW = 'SELECT * FROM `ref` WHERE `refId`=? AND `updatedAt` > ?;',
+SET = 'INSERT INTO `ref` (`dataId`, `refId`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);',
+TOUCH = 'UPDATE `ref` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId`=? `status`=1;',
+REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId`=?;'
 
 var client
 

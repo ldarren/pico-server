@@ -1,8 +1,9 @@
 INSERT INTO `key` (`id`, `key`) VALUES
 (1, 'un'),
 (2, 'passwd'),
-(3, 'token'),
-(4, 'detail'),
-(5, 'user'),
-(6, 'vehicle'),
-(7, 'job')
+(3, 'type'),
+(4, 'token'),
+(5, 'detail'),
+(6, 'user'),
+(7, 'vehicle'),
+(8, 'job');

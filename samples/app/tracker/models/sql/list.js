@@ -1,12 +1,12 @@
 const
-GET = 'SELECT * FROM list WHERE dataId=?;',
-GET_VAL = 'SELECT * FROM list WHERE dataId=? AND key=?;',
-GET_SEEN = 'SELECT * FROM list WHERE seenAt > ?;',
-GET_NEW = 'SELECT * FROM list WHERE updatedAt > ?;',
-CREATE = 'INSERT INTO list (dataId, key, val, createdBy) VALUES ?;',
-UPDATE = 'UPDATE list val=?, updatedBy=?, updatedAt=NOW() WHERE id=?;',
-SEEN = 'UPDATE list SET seen=seen+1, seenAt=NOW() WHERE id=?;',
-REMOVE = 'UPDATE list SET status=0, updatedBy=?, updatedBy=NOW() WHERE id=?;'
+GET = 'SELECT * FROM `list` WHERE `dataId`=?;',
+GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND `key`=?;',
+GET_SEEN = 'SELECT * FROM `list` WHERE `seenAt` > ?;',
+GET_NEW = 'SELECT * FROM `list` WHERE `updatedAt` > ?;',
+CREATE = 'INSERT INTO `list` (`dataId`, `key`, `val`, `createdBy`) VALUES (?);',
+UPDATE = 'UPDATE `list` `val`=?, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
+SEEN = 'UPDATE `list` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
+REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
 var
 common = require('../../../../lib/common'),
@@ -40,7 +40,7 @@ module.exports = {
     get: function(dataId, cb){
         client.query(GET, [dataId], function(err, result){
             if (err) return cb(err)
-            return (null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'))
         })
     },
     getVal: function(dataId, key, cb){
@@ -49,13 +49,13 @@ module.exports = {
     getSeen: function(at, cb){
         client.query(GET_SEEN, [at], function(err, result){
             if (err) return cb(err)
-            return (null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'))
         })
     },
     getNew: function(at, cb){
         client.query(GET_NEW, [at], function(err, result){
             if (err) return cb(err)
-            return (null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'))
         })
     }
 }
