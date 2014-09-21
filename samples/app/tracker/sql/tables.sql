@@ -45,7 +45,6 @@ CREATE TABLE `list`(
     `createdBy` BIGINT UNSIGNED NOT NULL,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     KEY (`dataId`),
-    KEY (`updatedAt`),
     KEY (`seenAt`)
 );
 

@@ -3,7 +3,8 @@ GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=?;',
 GET_VAL = 'SELECT `val` FROM `map` WHERE `dataId`=? AND `key`=?;',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val`=?;',
-GET_DATA_IDS = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
+GET_DATA_ID_MULTI_V = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
+GET_DATA_ID_MULTI_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 
 var
@@ -45,7 +46,10 @@ module.exports = {
     getDataId: function(key, value, cb){
         client.query(GET_DATA_ID, [IDS[key], value], cb)
     },
-    getDataIds: function(kv, cb){
+    getDataIdV: function(key, values, cb){
+        client.query(GET_DATA_ID_V, [IDS[key], values], cb)
+    },
+    getDataIdKV: function(kv, cb){
         if (!(kv instanceof Object)) return cb(null, [])
         var keys = Object.keys(kv)
         if (!keys.length) return cb(null, [])
@@ -58,6 +62,6 @@ module.exports = {
             params.push(IDS[k])
             params.push(kv[k])
         }
-        client.query(GET_DATA_IDS+tpl.join(' OR ')+';', params, cb)
+        client.query(GET_DATA_ID_KV+tpl.join(' OR ')+';', params, cb)
     }
 }

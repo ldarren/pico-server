@@ -2,7 +2,7 @@ const
 GET = 'SELECT * FROM `list` WHERE `dataId`=?;',
 GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND `key`=?;',
 GET_SEEN = 'SELECT * FROM `list` WHERE `seenAt` > ?;',
-GET_NEW = 'SELECT * FROM `list` WHERE `updatedAt` > ?;',
+GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? AND `updatedAt` > ?;',
 CREATE = 'INSERT INTO `list` (`dataId`, `key`, `val`, `createdBy`) VALUES (?);',
 UPDATE = 'UPDATE `list` `val`=?, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
 SEEN = 'UPDATE `list` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
@@ -52,8 +52,8 @@ module.exports = {
             return cb(null, common.group(result, KEYS, 'key'))
         })
     },
-    getNew: function(at, cb){
-        client.query(GET_NEW, [at], function(err, result){
+    getNew: function(dataId, at, cb){
+        client.query(GET_NEW, [dataId, at], function(err, result){
             if (err) return cb(err)
             return cb(null, common.group(result, KEYS, 'key'))
         })

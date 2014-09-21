@@ -1,5 +1,6 @@
 const
 GET = 'SELECT * FROM `data` WHERE `id`=?;',
+GET_LIST = 'SELECT * FROM `data` WHERE `id` IN (?);',
 GET_SEEN = 'SELECT * FROM `data` WHERE `seenAt` > ?;',
 GET_NEW = 'SELECT * FROM `data` WHERE `updatedAt` > ?;',
 CREATE = 'INSERT INTO `data` (`type`, `createdBy`) VALUES (?);',
@@ -36,6 +37,12 @@ module.exports = {
     },
     get: function(id, cb){
         client.query(GET, [id], function(err, result){
+            if (err) return cb(err)
+            return cb(null, common.replace(result, KEYS, 'type'))
+        })
+    },
+    getList: function(ids, cb){
+        client.query(GET_LIST, [id], function(err, result){
             if (err) return cb(err)
             return cb(null, common.replace(result, KEYS, 'type'))
         })
