@@ -14,6 +14,7 @@ all = {
         web.route('tr/user/edit', [user.verify, user.edit, listener.update])
         web.route('tr/user/remove', [user.verify, user.remove, listener.update])
         web.route('tr/data/poll', [user.verify, data.poll])
+        web.route('tr/data/list', [user.verify, data.list])
         next()
     }
 }

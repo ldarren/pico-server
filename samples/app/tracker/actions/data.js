@@ -14,25 +14,53 @@ getMax = function(seen, list){
     }
     return Max.apply(null, latest)
 },
-load = function(data, seen, cb){
+loadNew = function(data, seen, cb){
     var dataId = data.id
     sqlMap.getNew(dataId, seen, function(err, map){
         if (err) return cb(err)
         data = common.merge(data, map)
         sqlList.getNew(dataId, seen, function(err, list){
             if (err) return cb(err)
-            data = common.merge(data, map)
-            cb(null, data, getMax(seen, list))
+            data = common.merge(data, list)
+            sqlRef.getNew(dataId, seen, function(err, refs){
+                if (err) return cb(err)
+                data.refs = refs
+                cb(null, data, getMax(seen, list))
+            })
         })
     })
 },
-loadAll = function(summary, seen, details, latest, cb){
+loadAllNew = function(summary, seen, details, latest, cb){
     if (!summary.length) return cb(null, details, latest)
-    load(summary.pop(), seen, function(err, data, date){
+    loadNew(summary.pop(), seen, function(err, data, date){
         if (err) return cb(err)
         details.push(data)
         if (date > latest) latest = date
-        loadAll(dataIds, seen, details, latest, cb)
+        loadAllNew(summary, seen, details, latest, cb)
+    })
+},
+load = function(data, cb){
+    var dataId = data.id
+    sqlMap.get(dataId, function(err, map){
+        if (err) return cb(err)
+        data = common.merge(data, map)
+        sqlList.get(dataId, function(err, list){
+            if (err) return cb(err)
+            data = common.merge(data, list)
+            sqlRef.get(dataId, function(err, refs){
+                if (err) return cb(err)
+                data.refs = refs
+                cb(null, data)
+            })
+        })
+    })
+},
+loadAll = function(summary, details, cb){
+    if (!summary.length) return cb(null, details)
+    load(summary.pop(), function(err, data){
+        if (err) return cb(err)
+        details.push(data)
+        loadAll(summary, details, cb)
     })
 }
 
@@ -54,7 +82,7 @@ module.exports = {
             }
             sqlData.getList(common.pluck(result, 'dataId'), function(err, summary){
                 if (err) return next(err)
-                loadAll(summary, seen, [], seen, function(err, details, latest){
+                loadAllNew(summary, seen, [], seen, function(err, details, latest){
                     if (err) return next(err)
                     session.getModel(MODEL)[MODEL] = {
                         seen: latest,
@@ -63,6 +91,22 @@ module.exports = {
                     session.addJob([session.subJob(MODEL, MODEL)])
                     next()
                 })
+            })
+        })
+    },
+    list: function(session, order, next){
+        var dataIds = order.dataIds
+        if (!dataIds) return next(G_CERROR[400])
+        var
+        model = session.getModel(MODEL)
+        data = model[MODEL] = []
+        session.addJob([session.subJob(MODEL, MODEL)])
+        if (!dataIds.length) return next()
+        sqlData.getList(dataIds, function(err, summary){
+            if (err) return next(err)
+            loadAll(summary, data, function(err){
+                if (err) return next(err)
+                next()
             })
         })
     }

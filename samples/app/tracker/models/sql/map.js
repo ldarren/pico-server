@@ -3,8 +3,8 @@ GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=?;',
 GET_VAL = 'SELECT `val` FROM `map` WHERE `dataId`=? AND `key`=?;',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val`=?;',
-GET_DATA_ID_MULTI_V = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
-GET_DATA_ID_MULTI_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
+GET_DATA_ID_V = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
+GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 
 var

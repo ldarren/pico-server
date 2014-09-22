@@ -23,7 +23,7 @@ module.exports = {
     signin: function(session, order, next){
         sqlMap.getDataIdKV(order, function(err, result){
             if (err) return next(err)
-            if (!result.length) return next(G_CERROR[401])
+            if (result.length < 2) return next(G_CERROR[401])
             var userId = result[0].dataId
             if (userId !== result[1].dataId) return next(G_CERROR[401])
             sqlData.get(userId, function(err, result){
@@ -64,16 +64,22 @@ module.exports = {
                 })
                 sqlMap.set(userId, {un:un, passwd:passwd, token:token, user:TYPE_LEAD, detail:detail}, userId, function(err){
                     if(err) return next(err)
-                    var model = session.getModel(MODEL)
-                    model[MODEL] = {
+                    session.getModel(MODEL)[MODEL] = {
                         id:userId,
                         token: token 
                     }
                     session.addJob([session.subJob(MODEL, MODEL)])
-                    model['listener'] = {add:[TYPE_SUPER, TYPE_ADMIN], dataId:userId}
+                    session.getModel('listener')['listener'] = {add:[TYPE_SUPER, TYPE_ADMIN], dataId:userId}
                     next()
                 })
             })
+        })
+    },
+    verify: function(session, order, next){
+        sqlMap.getDataId('token', order.token, function(err, result){
+            if (err) return next(err)
+            if (1 === result.length && order.id === result[0].dataId) return next()
+            next(G_CERROR[403])
         })
     }
 }

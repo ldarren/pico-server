@@ -6,20 +6,21 @@ sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
 common = require('../../../lib/common'),
-add = function(userId, list, cb){
+add = function(dataId, list, cb){
     if (!list || !list.length) return cb()
     sqlMap.getDataIdV('user', list, function(err, result){
         if (err) return cb(err)
-        var refIds = common.pluck(result, 'dataId')
-        sqlRef.set(userId, refIds.concat(userId), userId, cb)
+        var refIds=[]
+        if (result.length) refIds = common.pluck(result, 'dataId')
+        sqlRef.set(dataId, refIds.concat([dataId]), [], dataId, cb)
     })
 },
-remove = function(userId, list, cb){
+remove = function(dataId, list, cb){
     if (!list || !list.length) return cb()
     sqlMap.getDataIdV('user', list, function(err, result){
         if (err) return cb(err)
         var refIds = common.pluck(result, 'dataId')
-        sqlRef.remove(userId, refIds, userId, cb)
+        sqlRef.remove(dataId, refIds, dataId, cb)
     })
 }
 
@@ -29,14 +30,14 @@ module.exports = {
     },
     update: function(session, order, next){
         var
-        model = session.getModel(MODEL),
-        userId = model.userId,
+        model = session.getModel(MODEL)[MODEL],
+        dataId = model.dataId,
         addList = model.add,
         removeList = model.remove
-        if (!userId || (!addList && removeList)) return next()
-        add(userId, addList, function(err){
+        if (!dataId || (!addList && removeList)) return next()
+        add(dataId, addList, function(err){
             if (err) return next(err)
-            remove(userId, removeList, function(err){
+            remove(dataId, removeList, function(err){
                 if (err) return next(err)
                 next()
             })
