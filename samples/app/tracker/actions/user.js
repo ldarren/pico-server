@@ -57,12 +57,12 @@ module.exports = {
                 var
                 userId = result.insertId,
                 token = createToken(order),
-                detail = JSON.stringify({
+                json = JSON.stringify({
                     name:order.name,
                     mobile:order.mobile,
                     email:order.email,
                 })
-                sqlMap.set(userId, {un:un, passwd:passwd, token:token, user:TYPE_LEAD, detail:detail}, userId, function(err){
+                sqlMap.set(userId, {un:un, passwd:passwd, token:token, user:TYPE_LEAD, json:json}, userId, function(err){
                     if(err) return next(err)
                     session.getModel(MODEL)[MODEL] = {
                         id:userId,

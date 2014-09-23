@@ -3,7 +3,7 @@ INSERT INTO `key` (`id`, `key`) VALUES
 (2, 'passwd'),
 (3, 'type'),
 (4, 'token'),
-(5, 'detail'),
+(5, 'json'),
 (6, 'user'),
 (7, 'vehicle'),
 (8, 'job');

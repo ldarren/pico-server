@@ -1,7 +1,7 @@
 const
-GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=?;',
+GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
 GET_VAL = 'SELECT `val` FROM `map` WHERE `dataId`=? AND `key`=?;',
-GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `updatedAt` > ?;',
+GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val`=?;',
 GET_DATA_ID_V = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
 GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
@@ -9,6 +9,7 @@ SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLI
 
 var
 common = require('../../../../lib/common'),
+secret = ['un', 'passwd', 'token'],
 client, KEYS, IDS
 
 module.exports = {
@@ -17,6 +18,7 @@ module.exports = {
         var k = require('./key')
         KEYS = k.keys()
         IDS = k.ids()
+        secret = secret.map(function(k){return IDS[k]})
         next()
     },
     set: function(dataId, kv, by, cb){
@@ -29,7 +31,7 @@ module.exports = {
         client.query(SET, [params], cb)
     },
     get: function(dataId, cb){
-        client.query(GET, [dataId], function(err, result){
+        client.query(GET, [dataId, secret], function(err, result){
             if (err) return cb(err)
             return cb(null, common.map(result, KEYS, 'key', 'val'))
         })
@@ -38,7 +40,7 @@ module.exports = {
         client.query(GET_VAL, [dataId, IDS[key]], cb)
     },
     getNew: function(dataId, at, cb){
-        client.query(GET_NEW, [dataId, at], function(err, result){
+        client.query(GET_NEW, [dataId, secret, at], function(err, result){
             if (err) return cb(err)
             return cb(null, common.map(result, KEYS, 'key', 'val'))
         })
