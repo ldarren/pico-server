@@ -8,13 +8,13 @@ sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
 common = require('../../../lib/common'),
 getMax = function(seen, list){
-    var latest = [seen]
+    var dates = [seen]
     for(var key in list){
-        lastest.push(Max.apply(null, concat(common.pluck(list[key], 'updatedAt'))))
+        dates.push(Max.apply(null, common.pluck(list[key], 'updatedAt')))
     }
-    return Max.apply(null, latest)
+    return Max.apply(null, dates)
 },
-loadNew = function(data, seen, cb){
+loadNew = function(data, seen, latest, cb){
     var dataId = data.id
     sqlMap.getNew(dataId, seen, function(err, map){
         if (err) return cb(err)
@@ -25,14 +25,14 @@ loadNew = function(data, seen, cb){
             sqlRef.getNew(dataId, seen, function(err, refs){
                 if (err) return cb(err)
                 data.refs = refs
-                cb(null, data, getMax(seen, list))
+                cb(null, data, getMax(Max(data.updatedAt, latest), list))
             })
         })
     })
 },
 loadAllNew = function(summary, seen, details, latest, cb){
     if (!summary.length) return cb(null, details, latest)
-    loadNew(summary.pop(), seen, function(err, data, date){
+    loadNew(summary.pop(), seen, latest, function(err, data, date){
         if (err) return cb(err)
         details.push(data)
         if (date > latest) latest = date
@@ -82,10 +82,10 @@ module.exports = {
             }
             sqlData.getList(common.pluck(result, 'dataId'), function(err, summary){
                 if (err) return next(err)
-                loadAllNew(summary, seen, [], seen, function(err, details, latest){
+                loadAllNew(summary, seen, [], new Date(seen), function(err, details, latest){
                     if (err) return next(err)
                     session.getModel(MODEL)[MODEL] = {
-                        seen: latest,
+                        seen: (new Date(latest)).toISOString(),
                         data: details
                     }
                     session.addJob([session.subJob(MODEL, MODEL)])
