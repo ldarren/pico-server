@@ -79,12 +79,13 @@ module.exports = {
                 session.addJob([session.subJob(G_MODEL.DATA, G_MODEL.DATA)])
                 return next()
             }
+            var latest = Max.apply(null, common.pluck(result, 'updatedAt'))
             sqlData.getList(common.pluck(result, 'refId'), function(err, summary){
                 if (err) return next(err)
-                loadAllNew(summary, seen, [], new Date(seen), function(err, details, latest){
+                loadAllNew(summary, seen, [], new Date(seen), function(err, details, newest){
                     if (err) return next(err)
                     session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = {
-                        seen: (new Date(latest)).toISOString(),
+                        seen: (new Date(Max(newest, latest))).toISOString(),
                         data: details
                     }
                     session.addJob([session.subJob(G_MODEL.DATA, G_MODEL.DATA)])
