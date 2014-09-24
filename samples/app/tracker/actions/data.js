@@ -2,6 +2,7 @@ const MODEL = 'data'
 
 var
 Max = Math.max,
+actUser = require('./user'),
 sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
@@ -109,5 +110,24 @@ module.exports = {
                 next()
             })
         })
+    },
+    getType: function(session, order, next){
+        var id = order.dataId
+        if (!id) return next(G_CERROR[400])
+        sqlData.get(id, function(err, result){
+            if (err) return next(err)
+            if (!result.length) return next(G_CERROR[400])
+            session.getModel(MODEL)[MODEL] = result[0]
+            next()
+        })
+    },
+    update: function(session, order, next){
+        var data = session.getModel(MODEL)[MODEL]
+        switch(data.type){
+        case 'user': actUser.update(session, order, next); break
+        case 'vehicle':
+        case 'job':
+        default: return next(G_CERROR[400])
+        }
     }
 }

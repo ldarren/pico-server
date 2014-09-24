@@ -29,12 +29,11 @@ module.exports = {
         next()
     },
     update: function(session, order, next){
-        var
-        model = session.getModel(MODEL)[MODEL],
+        var model = session.getModel(MODEL)
         dataId = model.dataId,
         addList = model.add,
         removeList = model.remove
-        if (!dataId || (!addList && removeList)) return next()
+        if (!dataId || (!addList && !removeList)) return next()
         add(dataId, addList, function(err){
             if (err) return next(err)
             remove(dataId, removeList, function(err){
