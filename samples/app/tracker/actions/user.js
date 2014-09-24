@@ -1,11 +1,4 @@
-const
-MODEL = 'user',
-TYPE_LEAD = 11,
-TYPE_CUSTOMER = 21,
-TYPE_DRIVER = 31,
-TYPE_ADMIN = 41,
-TYPE_SUPER = 101
-
+'use strict'
 var
 crypto = require('crypto'),
 sqlData = require('../models/sql/data'),
@@ -34,11 +27,11 @@ module.exports = {
                 var token = createToken(order)
                 sqlMap.set(userId, {token:token}, userId, function(err){
                     if (err) return next(err)
-                    session.getModel(MODEL)[MODEL] = {
+                    session.getModel(G_MODEL.USER)[G_MODEL.USER] = {
                         id: userId,
                         token: token 
                     }
-                    session.addJob([session.subJob(MODEL, MODEL)])
+                    session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
                     next()
                 })
             })
@@ -64,15 +57,16 @@ module.exports = {
                 var
                 userId = result.insertId,
                 token = createToken(order)
-                sqlMap.set(userId, {un:un, passwd:passwd, token:token, user:TYPE_LEAD, json:JSON.stringify(json)}, userId, function(err){
+                sqlMap.set(userId, {un:un, passwd:passwd, token:token, user:G_USER_TYPE.LEAD, json:JSON.stringify(json)}, userId, function(err){
                     if(err) return next(err)
-                    session.getModel(MODEL)[MODEL] = {
+                    session.getModel(G_MODEL.USER)[G_MODEL.USER] = {
                         id:userId,
                         token: token 
                     }
-                    session.addJob([session.subJob(MODEL, MODEL)])
-                    var l = session.getModel('listener')
-                    l.add=[TYPE_SUPER, TYPE_ADMIN]
+                    session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
+                    var l = session.getModel(G_MODEL.LISTENER)
+                    l.view=[G_USER_TYPE.ADMIN]
+                    l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
                     l.dataId=userId
                     next()
                 })
@@ -106,7 +100,7 @@ module.exports = {
         if (hasJSON) data.json = JSON.stringify(json)
         sqlMap.getVal(updatedBy, 'user', function(err, result){
             if (err) return next(err)
-            if (result[0].val < TYPE_ADMIN){ // not admin
+            if (result[0].val < G_USER_TYPE.ADMIN){ // not admin
                 delete data.user
                 if (updatedBy != userId) return next(G_CERROR[403]) // not self and not admin
             }
@@ -114,17 +108,36 @@ module.exports = {
                 if (err) return next(err)
                 sqlRef.touch(userId, updatedBy, function(err){
                     if (err) return next(err)
-                    var l = session.getModel('listener')
-                    l.dataId = userId
+                    var l = session.getModel(G_MODEL.LISTENER)
                     switch(parseInt(data.user)){
-                        case TYPE_LEAD: l.add=[TYPE_SUPER, TYPE_ADMIN], l.remove=[TYPE_DRIVER, TYPE_CUSTOMER, TYPE_LEAD]; break
-                        case TYPE_CUSTOMER: l.add=[TYPE_SUPER, TYPE_ADMIN], l.remove=[TYPE_DRIVER, TYPE_CUSTOMER, TYPE_LEAD]; break
-                        case TYPE_DRIVER: l.add=[TYPE_SUPER, TYPE_ADMIN, TYPE_DRIVER], l.remove=[TYPE_CUSTOMER, TYPE_LEAD]; break
-                        case TYPE_ADMIN: l.add=[TYPE_SUPER, TYPE_ADMIN], l.remove=[TYPE_DRIVER, TYPE_CUSTOMER, TYPE_LEAD]; break
-                        case TYPE_SUPER: l.add=[TYPE_SUPER], l.remove=[TYPE_ADMIN, TYPE_CUSTOMER, TYPE_LEAD]; break
+                    case G_USER_TYPE.LEAD:
+                        l.view=[G_USER_TYPE.ADMIN],
+                        l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.dataId = userId
+                        break
+                    case G_USER_TYPE.CUSTOMER:
+                        l.view=[G_USER_TYPE.ADMIN],
+                        l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.dataId = userId
+                        break
+                    case G_USER_TYPE.DRIVER:
+                        l.view=[G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER],
+                        l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER],
+                        l.dataId = userId
+                        break
+                    case G_USER_TYPE.ADMIN:
+                        l.view=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
+                        l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
+                        l.dataId = userId
+                        break
+                    case G_USER_TYPE.SUPER:
+                        l.view=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
+                        l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.dataId = userId
+                        break
                     }
-                    session.getModel(MODEL)[MODEL] = data
-                    session.addJob([session.subJob(MODEL, MODEL)])
+                    session.getModel(G_MODEL.USER)[G_MODEL.USER] = data
+                    session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
                     next()
                 })
             })

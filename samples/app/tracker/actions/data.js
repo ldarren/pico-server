@@ -1,5 +1,3 @@
-const MODEL = 'data'
-
 var
 Max = Math.max,
 actUser = require('./user'),
@@ -77,19 +75,19 @@ module.exports = {
         sqlRef.getNew(refId, seen, function(err, result){
             if (err) return next(err)
             if (!result.length){
-                session.getModel(MODEL)[MODEL] = { seen: seen }
-                session.addJob([session.subJob(MODEL, MODEL)])
+                session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = { seen: seen }
+                session.addJob([session.subJob(G_MODEL.DATA, G_MODEL.DATA)])
                 return next()
             }
-            sqlData.getList(common.pluck(result, 'dataId'), function(err, summary){
+            sqlData.getList(common.pluck(result, 'refId'), function(err, summary){
                 if (err) return next(err)
                 loadAllNew(summary, seen, [], new Date(seen), function(err, details, latest){
                     if (err) return next(err)
-                    session.getModel(MODEL)[MODEL] = {
+                    session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = {
                         seen: (new Date(latest)).toISOString(),
                         data: details
                     }
-                    session.addJob([session.subJob(MODEL, MODEL)])
+                    session.addJob([session.subJob(G_MODEL.DATA, G_MODEL.DATA)])
                     next()
                 })
             })
@@ -99,9 +97,9 @@ module.exports = {
         var dataIds = order.dataIds
         if (!dataIds) return next(G_CERROR[400])
         var
-        model = session.getModel(MODEL)
-        data = model[MODEL] = []
-        session.addJob([session.subJob(MODEL, MODEL)])
+        model = session.getModel(G_MODEL.DATA)
+        data = model[G_MODEL.DATA] = []
+        session.addJob([session.subJob(G_MODEL.DATA, G_MODEL.DATA)])
         if (!dataIds.length) return next()
         sqlData.getList(dataIds, function(err, summary){
             if (err) return next(err)
@@ -117,12 +115,12 @@ module.exports = {
         sqlData.get(id, function(err, result){
             if (err) return next(err)
             if (!result.length) return next(G_CERROR[400])
-            session.getModel(MODEL)[MODEL] = result[0]
+            session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = result[0]
             next()
         })
     },
     update: function(session, order, next){
-        var data = session.getModel(MODEL)[MODEL]
+        var data = session.getModel(G_MODEL.DATA)[G_MODEL.DATA]
         switch(data.type){
         case 'user': actUser.update(session, order, next); break
         case 'vehicle':

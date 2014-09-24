@@ -42,7 +42,7 @@ module.exports = {
         })
     },
     getList: function(ids, cb){
-        client.query(GET_LIST, ids, function(err, result){
+        client.query(GET_LIST, [ids], function(err, result){
             if (err) return cb(err)
             return cb(null, common.replace(result, KEYS, 'type'))
         })

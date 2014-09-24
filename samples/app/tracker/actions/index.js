@@ -1,3 +1,4 @@
+require('./const')
 var
 data = require('./data'),
 user = require('./user'),
