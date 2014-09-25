@@ -14,25 +14,28 @@ module.exports = {
         next()
     },
     signin: function(session, order, next){
-        sqlMap.getDataIdKV(order, function(err, result){
+        sqlMap.getDataId('un', order.un, function(err, result){
             if (err) return next(err)
-            if (result.length < 2) return next(G_CERROR[401])
+            if (!result.length) return next(G_CERROR[401])
             var userId = result[0].dataId
-            if (userId !== result[1].dataId) return next(G_CERROR[401])
-            sqlData.get(userId, function(err, result){
+            sqlMap.getVal(userId, 'passwd', function(err, result){
                 if (err) return next(err)
-                var data = result[0]
-                if (!data) return next(G_CERROR[401])
-                if ('user' !== data.type) return next(G_CERROR[401])
-                var token = createToken(order)
-                sqlMap.set(userId, {token:token}, userId, function(err){
+                if (!result.length || result[0].val !== order.passwd) return next(G_CERROR[401])
+                sqlData.get(userId, function(err, result){
                     if (err) return next(err)
-                    session.getModel(G_MODEL.USER)[G_MODEL.USER] = {
-                        id: userId,
-                        token: token 
-                    }
-                    session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
-                    next()
+                    var data = result[0]
+                    if (!data) return next(G_CERROR[401])
+                    if ('user' !== data.type) return next(G_CERROR[401])
+                    var token = createToken(order)
+                    sqlMap.set(userId, {token:token}, userId, function(err){
+                        if (err) return next(err)
+                        session.getModel(G_MODEL.USER)[G_MODEL.USER] = {
+                            id: userId,
+                            token: token 
+                        }
+                        session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
+                        next()
+                    })
                 })
             })
         })

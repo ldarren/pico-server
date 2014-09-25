@@ -2,8 +2,8 @@ const
 GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
 GET_VAL = 'SELECT `val` FROM `map` WHERE `dataId`=? AND `key`=?;',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
-GET_DATA_ID = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val`=?;',
-GET_DATA_ID_V = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
+GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `key`=? AND `val`=?;',
+GET_DATA_ID_V = 'SELECT `dataId`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
 GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 

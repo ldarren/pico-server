@@ -1,11 +1,11 @@
 {
     "app":{
         "name": "Sample Master",
-        "env": "dev",
+        "env": "pro",
         "elements": []
     },
     "worker":{
-        "config": "config/worker",
+        "config": "config/worker-pro",
         "count":1
     },
     "lib":{
