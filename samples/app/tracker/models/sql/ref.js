@@ -14,7 +14,7 @@ module.exports = {
         client = context.sqlTracker
         next()
     },
-    set: function(dataId, refs, vals, by, cb){
+    setRef: function(dataId, refs, vals, by, cb){
         if (!refs.length) return cb(null, [])
         var params = []
         for(var i=0,r; r=refs[i]; i++){
@@ -22,7 +22,7 @@ module.exports = {
         }
         client.query(SET, [params], cb)
     },
-    setRef: function(data, refId, vals, by, cb){
+    set: function(data, refId, vals, by, cb){
         if (!data.length) return cb(null, [])
         var params = []
         for(var i=0,d; d=data[i]; i++){
@@ -37,7 +37,7 @@ module.exports = {
         client.query(REMOVE, [by, dataIds, refId], cb)
     },
     removeRef: function(dataId, refIds, by, cb){
-        client.query(REMOVE, [by, dataId, refIds], cb)
+        client.query(REMOVE_REF, [by, dataId, refIds], cb)
     },
     get: function(dataId, cb){
         client.query(GET, [dataId], cb)

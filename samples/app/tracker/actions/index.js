@@ -6,6 +6,7 @@ vehicle = require('./vehicle'),
 job = require('./job'),
 invoice = require('./invoice'),
 listener = require('./listener'),
+sep = function(session, order, next){console.log('###'); return next()},
 all = {
     setup: function(context, next){
         var web = context.webServer

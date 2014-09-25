@@ -8,7 +8,7 @@ addView = function(dataId, view, cb){
     if (!view || !view.length) return cb(null, G_USER_TYPE_LIST)
     sqlMap.getDataIdV('user', view, function(err, result){
         if (err) return cb(err)
-        sqlRef.set(dataId, common.pluck(result, 'dataId').concat([dataId]), [], dataId, function(err){
+        sqlRef.setRef(dataId, common.pluck(result, 'dataId').concat([dataId]), [], dataId, function(err){
             cb(err, G_USER_TYPE_LIST.filter(function(e){return -1===view.indexOf(e)}))
         })
     })
@@ -17,7 +17,7 @@ addSeen = function(dataId, seen, cb){
     if (!seen || !seen.length) return cb(null, G_USER_TYPE_LIST)
     sqlMap.getDataIdV('user', seen, function(err, result){
         if (err) return cb(err)
-        sqlRef.setRef(common.pluck(result, 'dataId'), dataId, [], dataId, function(err){
+        sqlRef.set(common.pluck(result, 'dataId'), dataId, [], dataId, function(err){
             cb(err, G_USER_TYPE_LIST.filter(function(e){return -1===seen.indexOf(e)}))
         })
     })
