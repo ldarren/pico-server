@@ -104,7 +104,7 @@ module.exports = {
         sqlMap.getVal(updatedBy, 'user', function(err, result){
             if (err) return next(err)
             if (result[0].val < G_USER_TYPE.ADMIN){ // not admin
-                delete data.user
+                //delete data.user
                 if (updatedBy != userId) return next(G_CERROR[403]) // not self and not admin
             }
             sqlMap.set(userId, data, updatedBy, function(err){

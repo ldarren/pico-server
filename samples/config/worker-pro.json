@@ -1,0 +1,30 @@
+{
+    "app":{
+        "name": "Sample Worker",
+        "env": "pro",
+        "elements": [
+            "app/studio/models",
+            "app/studio/actions",
+            "app/tracker/models",
+            "app/tracker/actions",
+            "app/chat/models",
+            "app/chat/actions",
+            "app/hh/models",
+            "app/hh/actions"
+        ]
+    },
+    "require":[
+        "worker"
+    ],
+    "lib":{
+        "webServer":{
+            "port":4000
+        },
+        "sqlTracker":{
+            "database":"perfectgoh"
+        },
+        "sqlStudioProject":{
+            "database":"studio"
+        }
+    }
+}

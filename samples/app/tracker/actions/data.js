@@ -15,7 +15,7 @@ getMax = function(seen, list){
 },
 loadNew = function(data, seen, latest, cb){
     var dataId = data.id
-    sqlMap.getNew(dataId, seen, function(err, map){
+    sqlMap.get(dataId, function(err, map){
         if (err) return cb(err)
         data = common.merge(data, map)
         sqlList.getNew(dataId, seen, function(err, list){
