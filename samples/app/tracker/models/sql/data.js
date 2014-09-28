@@ -1,5 +1,6 @@
 const
 GET = 'SELECT * FROM `data` WHERE `id`=?;',
+GET_TYPE = 'SELECT * FROM `data` WHERE `type`=?;',
 GET_LIST = 'SELECT * FROM `data` WHERE `id` IN (?);',
 GET_SEEN = 'SELECT * FROM `data` WHERE `seenAt` > ?;',
 GET_NEW = 'SELECT * FROM `data` WHERE `updatedAt` > ?;',
@@ -37,6 +38,12 @@ module.exports = {
     },
     get: function(id, cb){
         client.query(GET, [id], function(err, result){
+            if (err) return cb(err)
+            return cb(null, common.replace(result, KEYS, 'type'))
+        })
+    },
+    getType: function(type, cb){
+        client.query(GET_TYPE, [IDS[type]], function(err, result){
             if (err) return cb(err)
             return cb(null, common.replace(result, KEYS, 'type'))
         })

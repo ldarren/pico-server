@@ -35,6 +35,17 @@ removeSeen = function(dataId, seen, cb){
         if (err) return cb(err)
         sqlRef.remove(common.pluck(result, 'dataId'), dataId, dataId, cb)
     })
+},
+addRemoveVehicle = function(dataId, seen, cb){
+    if (undefined === seen) return cb()
+    sqlData.getType('vehicle', function(err, result){
+        if (err) return cb(err)
+        if (seen){
+            sqlRef.setRef(dataId, common.pluck(result, 'id'), [], dataId, cb)
+        }else{
+            sqlRef.removeRef(dataId, common.pluck(result, 'id'), dataId, cb)
+        }
+    })
 }
 
 module.exports = {
@@ -54,7 +65,10 @@ module.exports = {
                     if (err) return next(err)
                     removeSeen(dataId, notSeen, function(err){
                         if (err) return next(err)
-                        next()
+                        addRemoveVehicle(dataId, model.vehicle, function(err){
+                            if (err) return next(err)
+                            next()
+                        })
                     })
                 })
             })

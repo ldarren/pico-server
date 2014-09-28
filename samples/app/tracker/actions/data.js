@@ -1,6 +1,7 @@
 var
 Max = Math.max,
 actUser = require('./user'),
+actVehicle = require('./vehicle'),
 sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
@@ -120,11 +121,25 @@ module.exports = {
             next()
         })
     },
+    create: function(session, order, next){
+        switch(order.type){
+        case 'vehicle': return actVehicle.create(session, order, next)
+        default: return next(G_CERROR[400])
+        }
+    },
     update: function(session, order, next){
         var data = session.getModel(G_MODEL.DATA)[G_MODEL.DATA]
+        switch(data ? data.type : order.type){
+        case 'user': return actUser.update(session, order, next)
+        case 'vehicle': return actVehicle.update(session, order, next)
+        case 'job':
+        default: return next(G_CERROR[400])
+        }
+    },
+    remove: function(session, order, next){
+        var data = session.getModel(G_MODEL.DATA)[G_MODEL.DATA]
         switch(data.type){
-        case 'user': actUser.update(session, order, next); break
-        case 'vehicle':
+        case 'vehicle': return actVehicle.remove(session, order, next)
         case 'job':
         default: return next(G_CERROR[400])
         }

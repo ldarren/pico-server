@@ -104,8 +104,8 @@ module.exports = {
         sqlMap.getVal(updatedBy, 'user', function(err, result){
             if (err) return next(err)
             if (result[0].val < G_USER_TYPE.ADMIN){ // not admin
-                //delete data.user
-                if (updatedBy != userId) return next(G_CERROR[403]) // not self and not admin
+                delete data.user
+                if (updatedBy != userId) return next(G_CERROR[401]) // not self and not admin
             }
             sqlMap.set(userId, data, updatedBy, function(err){
                 if (err) return next(err)
@@ -116,26 +116,31 @@ module.exports = {
                     case G_USER_TYPE.LEAD:
                         l.view=[G_USER_TYPE.ADMIN],
                         l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.vehicle=false
                         l.dataId = userId
                         break
                     case G_USER_TYPE.CUSTOMER:
                         l.view=[G_USER_TYPE.ADMIN],
                         l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.vehicle=false
                         l.dataId = userId
                         break
                     case G_USER_TYPE.DRIVER:
                         l.view=[G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER],
                         l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER],
+                        l.vehicle=true
                         l.dataId = userId
                         break
                     case G_USER_TYPE.ADMIN:
                         l.view=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
                         l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
+                        l.vehicle=true
                         l.dataId = userId
                         break
                     case G_USER_TYPE.SUPER:
                         l.view=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN, G_USER_TYPE.DRIVER, G_USER_TYPE.CUSTOMER, G_USER_TYPE.LEAD],
                         l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN],
+                        l.vehicle=true
                         l.dataId = userId
                         break
                     }

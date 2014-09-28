@@ -1,6 +1,7 @@
 Object.freeze(G_MODEL={
 DATA: 'data',
 USER: 'user',
+VEHICLE: 'vehicle',
 LISTENER: 'listener',
 })
 Object.freeze(G_USER_TYPE={

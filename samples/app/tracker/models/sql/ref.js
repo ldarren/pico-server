@@ -5,7 +5,8 @@ GET_NEW = 'SELECT * FROM `ref` WHERE `dataId`=? AND `updatedAt` > ?;',
 SET = 'INSERT INTO `ref` (`dataId`, `refId`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
 TOUCH = 'UPDATE `ref` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `refId`=? AND `status`=1;',
 REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId` IN (?) AND `refId`=?;',
-REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId` IN (?);'
+REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId` IN (?);',
+REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `refId`=?;'
 
 var client
 
@@ -38,6 +39,9 @@ module.exports = {
     },
     removeRef: function(dataId, refIds, by, cb){
         client.query(REMOVE_REF, [by, dataId, refIds], cb)
+    },
+    removeRefAll: function(refId, by, cb){
+        client.query(REMOVE_REF_ALL, [by, refId], cb)
     },
     get: function(dataId, cb){
         client.query(GET, [dataId], cb)
