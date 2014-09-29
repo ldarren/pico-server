@@ -19,7 +19,7 @@ all = {
         web.route('tr/data/list', [user.verify, data.list])
         web.route('tr/data/create', [user.verify, data.create, listener.update])
         web.route('tr/data/update', [user.verify, data.getType, data.update, listener.update])
-        web.route('tr/data/remove', [user.verify, data.getType, data.remove])
+        web.route('tr/data/delete', [user.verify, data.getType, data.remove])
         next()
     }
 }
