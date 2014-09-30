@@ -1,6 +1,6 @@
 const
 GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
-GET_VAL = 'SELECT `val` FROM `map` WHERE `dataId`=? AND `key`=?;',
+GET_VAL = 'SELECT * FROM `map` WHERE `dataId`=? AND `key`=?;',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `key`=? AND `val`=?;',
 GET_DATA_ID_V = 'SELECT `dataId`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',

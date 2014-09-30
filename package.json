@@ -21,8 +21,8 @@
     "memcached":"",
     "mysql": "",
     "node-riak-client": "",
-    "apn":"1.5.2",
-    "node-gcm":"0.9.11",
+    "apn":">=1.5.2",
+    "node-gcm":">=0.9.11",
     "pico-common": ">=0.0.10"
   },
   "bugs": {
