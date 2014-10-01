@@ -1,6 +1,7 @@
 const
 GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
 GET_VAL = 'SELECT * FROM `map` WHERE `dataId`=? AND `key`=?;',
+GET_VALS = 'SELECT * FROM `map` WHERE `dataId`=? AND `key` IN (?);',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `key`=? AND `val`=?;',
 GET_DATA_ID_V = 'SELECT `dataId`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
@@ -39,6 +40,13 @@ module.exports = {
     getVal: function(dataId, key, cb){
         client.query(GET_VAL, [dataId, IDS[key]], cb)
     },
+    getVals: function(dataId, keys, cb){
+        if (!keys || !keys.length) return cb(null, {})
+        client.query(GET_VALS, [dataId, keys.map(function(k){return IDS[k]})], function(err, result){
+            if (err) return cb(err)
+            cb(null, common.group(result, KEYS, 'key'))
+        })
+    },
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, secret, at], function(err, result){
             if (err) return cb(err)
@@ -49,6 +57,7 @@ module.exports = {
         client.query(GET_DATA_ID, [IDS[key], value], cb)
     },
     getDataIdV: function(key, values, cb){
+        if (!values || !values.length) return cb(null, [])
         client.query(GET_DATA_ID_V, [IDS[key], values], cb)
     },
     getDataIdKV: function(kv, cb){

@@ -13,11 +13,11 @@ addView = function(dataId, view, cb){
         })
     })
 },
-addSeen = function(dataId, seen, cb){
-    if (!seen || !seen.length) return cb(null, G_USER_TYPE_LIST)
+addSeen = function(dataId, seen, seenBy, cb){
+    if ((!seen || !seen.length) && !seenBy.length) return cb(null, G_USER_TYPE_LIST)
     sqlMap.getDataIdV('user', seen, function(err, result){
         if (err) return cb(err)
-        sqlRef.set(common.pluck(result, 'dataId'), dataId, [], dataId, function(err){
+        sqlRef.set(common.pluck(result, 'dataId').concat(), dataId, [], dataId, function(err){
             cb(err, G_USER_TYPE_LIST.filter(function(e){return -1===seen.indexOf(e)}))
         })
     })
@@ -61,7 +61,7 @@ module.exports = {
             if (err) return next(err)
             removeView(dataId, notView, function(err){
                 if (err) return next(err)
-                addSeen(dataId, model.seen, function(err, notSeen){
+                addSeen(dataId, model.seen, model.seenBy || [], function(err, notSeen){
                     if (err) return next(err)
                     removeSeen(dataId, notSeen, function(err){
                         if (err) return next(err)

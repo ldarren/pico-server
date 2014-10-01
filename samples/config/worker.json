@@ -75,7 +75,7 @@
         },
         "trackerNotifier":{
             "mod":"notifier",
-            "senderId":"",
+            "serverAPIKey":"",
             "cert":"",
             "key":"",
             "passphase":"",
