@@ -7,5 +7,5 @@ INSERT INTO `key` (`id`, `key`) VALUES
 (6, 'user'),
 (7, 'vehicle'),
 (8, 'job'),
-(9, 'android'),
-(10, 'ios');
+(9, 'platform'),
+(10, 'pushToken');
