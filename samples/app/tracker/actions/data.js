@@ -23,7 +23,7 @@ loadNew = function(data, seen, latest, cb){
         sqlList.getNew(dataId, seen, function(err, list){
             if (err) return cb(err)
             data = common.merge(data, list)
-            sqlRef.getNew(dataId, seen, function(err, refs){
+            sqlRef.getNewRef(dataId, seen, function(err, refs){
                 if (err) return cb(err)
                 data.refs = refs
                 cb(null, data, getMax(Max(data.updatedAt, latest), list))
