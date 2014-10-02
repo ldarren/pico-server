@@ -6,4 +6,6 @@ INSERT INTO `key` (`id`, `key`) VALUES
 (5, 'json'),
 (6, 'user'),
 (7, 'vehicle'),
-(8, 'job');
+(8, 'job'),
+(9, 'android'),
+(10, 'ios');

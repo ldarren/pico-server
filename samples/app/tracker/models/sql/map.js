@@ -10,7 +10,7 @@ SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLI
 
 var
 common = require('../../../../lib/common'),
-secret = ['un', 'passwd', 'token'],
+secret = ['un', 'passwd', 'token', 'ios', 'android'],
 client, KEYS, IDS
 
 module.exports = {
@@ -32,8 +32,11 @@ module.exports = {
         client.query(SET, [params], cb)
     },
     get: function(dataId, cb){
+console.log(GET, dataId, secret)
         client.query(GET, [dataId, secret], function(err, result){
+console.log(err, result)
             if (err) return cb(err)
+console.log(common.map(result, KEYS, 'key', 'val'))
             return cb(null, common.map(result, KEYS, 'key', 'val'))
         })
     },

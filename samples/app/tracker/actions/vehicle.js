@@ -33,6 +33,8 @@ module.exports = {
                     if(err) return next(err)
                     session.getModel(G_MODEL.VEHICLE)[G_MODEL.VEHICLE] = {
                         id:dataId,
+                        type:order.type,
+                        status: 1,
                         json:json
                     }
                     session.addJob([session.subJob(G_MODEL.VEHICLE, G_MODEL.VEHICLE)])

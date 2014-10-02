@@ -79,6 +79,8 @@ module.exports = {
                     session.getModel(G_MODEL.JOB)[G_MODEL.JOB] = {
                         id:dataId,
                         job:job,
+                        type:order.type,
+                        status: 1,
                         json:json
                     }
                     session.addJob([session.subJob(G_MODEL.JOB, G_MODEL.JOB)])

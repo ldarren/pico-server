@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS `perfectgoh`;
-CREATE DATABASE IF NOT EXISTS `perfectgoh` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
+DROP DATABASE IF EXISTS `tracker`;
+CREATE DATABASE IF NOT EXISTS `tracker` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
 
-USE `perfectgoh`;
+USE `tracker`;
 
 SET storage_engine=INNODB;
 

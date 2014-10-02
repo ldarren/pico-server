@@ -35,9 +35,11 @@ module.exports = {
         client.query(TOUCH, [by, refId], cb)
     },
     remove: function(dataIds, refId, by, cb){
+        if (!dataIds.length) return cb(null, dataIds)
         client.query(REMOVE, [by, dataIds, refId], cb)
     },
     removeRef: function(dataId, refIds, by, cb){
+        if (!refIds.length) return cb(null, refIds)
         client.query(REMOVE_REF, [by, dataId, refIds], cb)
     },
     removeRefAll: function(refId, by, cb){
