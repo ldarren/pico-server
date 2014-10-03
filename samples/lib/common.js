@@ -60,11 +60,10 @@ module.exports = common = {
 	},
 	// group([{k:1, v:5},{k:1, v:6}], {1:'key1', 2:'key2'}, 'k') = {key1:[{k:1,v:5},{k:1,v:6}]}
 	group: function(arr, keys, K){
-		var
-		output = {},
-		k
+		var output = {}, k
 		for(var i=0,a; a=arr[i]; i++){
-			k = keys[a[K]]
+            k = a[K]
+			k = keys[k] || k
 			output[k] = output[k] || []
 			output[k].push(a)
 		}
