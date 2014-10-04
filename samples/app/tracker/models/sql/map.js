@@ -10,7 +10,7 @@ SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLI
 
 var
 common = require('../../../../lib/common'),
-secret = ['un', 'passwd', 'token', 'ios', 'android'],
+secret = ['un', 'passwd', 'token', 'platform', 'pushToken'],
 client, KEYS, IDS
 
 module.exports = {

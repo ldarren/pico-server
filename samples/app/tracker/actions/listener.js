@@ -15,9 +15,15 @@ addView = function(dataId, view, cb){
 },
 addSeen = function(dataId, seen, seenBy, cb){
     if ((!seen || !seen.length) && !seenBy.length) return cb(null, G_USER_TYPE_LIST)
+    if(!seen || !seen.length){
+        sqlRef.set(seenBy, dataId, [], dataId, function(err){
+            cb(err, G_USER_TYPE_LIST.filter(function(e){return -1===seen.indexOf(e)}))
+        })
+        return
+    }
     sqlMap.getDataIdV('user', seen, function(err, result){
         if (err) return cb(err)
-        sqlRef.set(common.pluck(result, 'dataId').concat(), dataId, [], dataId, function(err){
+        sqlRef.set(common.pluck(result, 'dataId').concat(seenBy), dataId, [], dataId, function(err){
             cb(err, G_USER_TYPE_LIST.filter(function(e){return -1===seen.indexOf(e)}))
         })
     })
@@ -29,16 +35,16 @@ removeView = function(dataId, view, cb){
         sqlRef.removeRef(dataId, common.pluck(result, 'dataId'), dataId, cb)
     })
 },
-removeSeen = function(dataId, seen, cb){
+removeSeen = function(dataId, seen, seenBy, cb){
     if (!seen || !seen.length) return cb()
     sqlMap.getDataIdV('user', seen, function(err, result){
         if (err) return cb(err)
-        sqlRef.remove(common.pluck(result, 'dataId'), dataId, dataId, cb)
+        sqlRef.remove(common.pluck(result, 'dataId').filter(function(s){return -1===seenBy.indexOf(s)}), dataId, dataId, cb)
     })
 },
-addRemoveVehicle = function(dataId, seen, cb){
+addRemove = function(type, dataId, seen, cb){
     if (undefined === seen) return cb()
-    sqlData.getType('vehicle', function(err, result){
+    sqlData.getType(type, function(err, result){
         if (err) return cb(err)
         if (seen){
             sqlRef.setRef(dataId, common.pluck(result, 'id'), [], dataId, cb)
@@ -55,19 +61,23 @@ module.exports = {
     update: function(session, order, next){
         var
         model = session.getModel(G_MODEL.LISTENER),
-        dataId = model.dataId
+        dataId = model.dataId,
+        seenBy = model.seenBy || []
         if (!dataId) return next()
         addView(dataId, model.view, function(err, notView){
             if (err) return next(err)
             removeView(dataId, notView, function(err){
                 if (err) return next(err)
-                addSeen(dataId, model.seen, model.seenBy || [], function(err, notSeen){
+                addSeen(dataId, model.seen, seenBy || [], function(err, notSeen){
                     if (err) return next(err)
-                    removeSeen(dataId, notSeen, function(err){
+                    removeSeen(dataId, notSeen, seenBy, function(err){
                         if (err) return next(err)
-                        addRemoveVehicle(dataId, model.vehicle, function(err){
+                        addRemove('vehicle', dataId, model.vehicle, function(err){
                             if (err) return next(err)
-                            next()
+                            addRemove('job', dataId, model.job, function(err){
+                                if (err) return next(err)
+                                next()
+                            })
                         })
                     })
                 })
