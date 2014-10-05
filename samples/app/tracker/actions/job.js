@@ -24,7 +24,7 @@ editRights = function(jobId, updatedBy, cb){
         sqlMap.getVal(updatedBy, 'user', function(err, result){
             if (err) return cb(err)
             if (!result.length) return cb(G_CERROR[400])
-            var role = result[0].val
+            var role = parseInt(result[0].val)
 
             switch(state){
             case G_JOB_STATE.OPEN:
@@ -121,12 +121,10 @@ module.exports = {
             switch(newState){
             case G_JOB_STATE.SCHEDULE:
                 if (!json.vehicle || !json.driver || !json.charge) return next(G_CERROR[400])
-                break
-            case G_JOB_STATE.START:
                 params.code = Ceil(Random()*9999)
                 break
             case G_JOB_STATE.STOP:
-                if (!json.verify|| code !== json.verify) return next(G_CERROR[400])
+                if (!json.verify|| code != json.verify) return next(G_CERROR[400])
                 break
             }
             params.json = JSON.stringify(json)
