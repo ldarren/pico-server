@@ -145,5 +145,6 @@ module.exports = {
         case 'job': return actJob.remove(session, order, next)
         default: return next(G_CERROR[400])
         }
-    }
+    },
+    loadAll: loadAll
 }
