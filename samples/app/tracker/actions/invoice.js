@@ -128,10 +128,18 @@ module.exports = {
             actData.loadAll(summary, [], function(err, details){
                 if (err) return next(err)
 
+                var
+                filtered = details.filter(function(d){return 50 == d.job}),
+                sorted = filtered.sort(function(a, b){
+                    if(a.updatedBy > b.updatedBy) return 1
+                    else if (a.updatedBy < b.updatedBy) return -1
+                    return 0
+                })
+
                 switch(order.type){
-                case '2': return docxOut(session, details, next)
-                case '3': return xlsxOut(session, details, next)
-                default: return httpOut(session, details, next)
+                case '2': return docxOut(session, sorted, next)
+                case '3': return xlsxOut(session, sorted, next)
+                default: return httpOut(session, sorted, next)
                 }
             })
         })
