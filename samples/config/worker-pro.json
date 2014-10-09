@@ -25,6 +25,12 @@
         },
         "sqlStudioProject":{
             "database":"studio"
+        },
+        "trackerNotifier":{
+            "cert":"",
+            "key":"",
+            "passphase":"",
+            "gateway":"gateway.push.apple.com"
         }
     }
 }

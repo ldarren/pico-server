@@ -75,11 +75,11 @@
         },
         "trackerNotifier":{
             "mod":"notifier",
-            "serverAPIKey":"",
+            "serverAPIKey":"AIzaSyCdbk0lODnltq-krglDiH2Fto3yOn8-NLU",
             "cert":"",
             "key":"",
             "passphase":"",
-            "gateway":"",
+            "gateway":"gateway.sandbox.push.apple.com",
             "retry":3,
             "ttl":3600,
             "delay":false
