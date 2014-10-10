@@ -33,8 +33,8 @@ editRights = function(jobId, updatedBy, cb){
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.SCHEDULE:
-                if (createdBy === updatedBy) return cb(null, [ G_JOB_STATE.CANCEL], createdBy)
-                else if (role === G_USER_TYPE.DRIVER) return cb(null, [G_JOB_STATE.START], createdBy)
+                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy)
+                else if (role === G_USER_TYPE.DRIVER) return cb(null, [state,G_JOB_STATE.START], createdBy)
                 else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.START], createdBy)
                 else return cb(G_CERROR[400])
                 break
@@ -124,6 +124,7 @@ module.exports = {
                 params.code = Ceil(Random()*9999)
                 break
             case G_JOB_STATE.STOP:
+console.log('stop', json.verify, code)
                 if (!json.verify|| code != json.verify) return next(G_CERROR[400])
                 break
             }
@@ -132,6 +133,7 @@ module.exports = {
                 if(err) return next(err)
                 params.id = jobId
                 session.getModel(G_MODEL.JOB)[G_MODEL.JOB] = params
+console.log('return', params)
                 session.addJob([session.subJob(G_MODEL.JOB, G_MODEL.JOB)])
                 var l = session.getModel(G_MODEL.LISTENER)
                 l.dataId=jobId
