@@ -67,10 +67,17 @@ module.exports = {
                         token: token 
                     }
                     session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
+
                     var l = session.getModel(G_MODEL.LISTENER)
                     l.view=[G_USER_TYPE.ADMIN]
                     l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
                     l.dataId=userId
+
+                    var n = session.getModel(G_MODEL.NOTIFIER)
+                    n.dataId = userId
+                    n.title = 'New User'
+                    n.msg = json.name + 'is asking to join us'
+
                     next()
                 })
             })
@@ -94,13 +101,14 @@ module.exports = {
             case 'un':
             case 'passwd': break
             case 'dataId': userId = parseInt(order[k]); break
-            case 'user': data[k]=order[k]; break
+            case 'user':
+            case 'platform':
+            case 'pushToken': data[k]=order[k]; break
             default: json[k] = order[k]; break
             }
         }
-        var hasJSON = Object.keys(json).length
-        if (!userId || (!Object.keys(data).length && !hasJSON)) return next(G_CERROR[400])
-        if (hasJSON) data.json = JSON.stringify(json)
+        if (!userId || (!Object.keys(data).length)) return next(G_CERROR[400])
+        if (Object.keys(json).length) data.json = JSON.stringify(json)
         sqlMap.getVal(updatedBy, 'user', function(err, result){
             if (err) return next(err)
             if (result[0].val < G_USER_TYPE.ADMIN){ // not admin
@@ -109,6 +117,11 @@ module.exports = {
             }
             sqlMap.set(userId, data, updatedBy, function(err){
                 if (err) return next(err)
+
+                session.getModel(G_MODEL.USER)[G_MODEL.USER] = data
+                session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
+                if (!data.user && !data.json) return next()
+
                 sqlRef.touch(userId, updatedBy, function(err){
                     if (err) return next(err)
                     var l = session.getModel(G_MODEL.LISTENER)
@@ -146,8 +159,12 @@ module.exports = {
                         l.dataId = userId
                         break
                     }
-                    session.getModel(G_MODEL.USER)[G_MODEL.USER] = data
-                    session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
+
+                    var n = session.getModel(G_MODEL.NOTIFIER)
+                    n.dataId = userId
+                    n.title = 'Account updated'
+                    n.msg = 'Your account has been updated'
+
                     next()
                 })
             })

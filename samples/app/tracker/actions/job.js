@@ -28,24 +28,24 @@ editRights = function(jobId, updatedBy, cb){
 
             switch(state){
             case G_JOB_STATE.OPEN:
-                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.SCHEDULE], createdBy)
+                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state)
+                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.SCHEDULE], createdBy, state)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.SCHEDULE:
-                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy)
-                else if (role === G_USER_TYPE.DRIVER) return cb(null, [state,G_JOB_STATE.START], createdBy)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.START], createdBy)
+                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state)
+                else if (role === G_USER_TYPE.DRIVER) return cb(null, [state,G_JOB_STATE.START], createdBy, state)
+                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.START], createdBy, state)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.START:
                 if (!code || !code.length) return cb(G_CERROR[400])
                 if (role === G_USER_TYPE.DRIVER) return cb(null, [G_JOB_STATE.STOP], createdBy, code[0].val)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.STOP], createdBy, code[0].val)
+                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.STOP], createdBy, state, code[0].val)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.STOP:
-                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.CLOSE], createdBy)
+                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.CLOSE], createdBy, state)
                 else return cb(G_CERROR[400])
                 break
             default: return cb(G_CERROR[400])
@@ -66,7 +66,7 @@ module.exports = {
             sqlData.create(order.type, createdBy, function(err, result){
                 if(err) return next(err)
                 var
-                dataId = result.insertId,
+                jobId = result.insertId,
                 json={},job=G_JOB_STATE.OPEN
                 for(var k in order){
                     switch(k){
@@ -78,10 +78,10 @@ module.exports = {
                     }
                 }
                 json = JSON.stringify(json)
-                sqlMap.set(dataId, {job:job,json:json}, createdBy, function(err){
+                sqlMap.set(jobId, {job:job,json:json}, createdBy, function(err){
                     if(err) return next(err)
                     session.getModel(G_MODEL.JOB)[G_MODEL.JOB] = {
-                        id:dataId,
+                        id:jobId,
                         job:''+job,
                         type:order.type,
                         status: 1,
@@ -89,9 +89,16 @@ module.exports = {
                         createdBy:createdBy
                     }
                     session.addJob([session.subJob(G_MODEL.JOB, G_MODEL.JOB)])
+
                     var l = session.getModel(G_MODEL.LISTENER)
                     l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
-                    l.dataId=dataId
+                    l.dataId=jobId
+
+                    var n = session.getModel(G_MODEL.NOTIFIER)
+                    n.dataId = jobId
+                    n.title = 'Job Request'
+                    n.msg = json.from +' to '+json.to+', at '+json.date+' '+json.time
+
                     next()
                 })
             })
@@ -102,7 +109,7 @@ module.exports = {
         updatedBy = order.id,
         jobId = order.dataId,
         newState = parseInt(order.job)
-        editRights(jobId, updatedBy, function(err, rights, createdBy, code){
+        editRights(jobId, updatedBy, function(err, rights, createdBy, oldState, code){
             if (err) return next(err)
             if (-1 === rights.indexOf(newState)) return next(G_CERROR[401])
             var 
@@ -124,7 +131,6 @@ module.exports = {
                 params.code = Ceil(Random()*9999)
                 break
             case G_JOB_STATE.STOP:
-console.log('stop', json.verify, code)
                 if (!json.verify|| code != json.verify) return next(G_CERROR[400])
                 break
             }
@@ -133,13 +139,20 @@ console.log('stop', json.verify, code)
                 if(err) return next(err)
                 params.id = jobId
                 session.getModel(G_MODEL.JOB)[G_MODEL.JOB] = params
-console.log('return', params)
                 session.addJob([session.subJob(G_MODEL.JOB, G_MODEL.JOB)])
+
                 var l = session.getModel(G_MODEL.LISTENER)
                 l.dataId=jobId
                 l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
                 l.seenBy=[createdBy]
                 if (json.driver) l.seenBy.push(parseInt(json.driver))
+
+                var n = session.getModel(G_MODEL.NOTIFIER)
+                n.dataId = jobId
+                n.title = 'Job update'
+                if (newState === oldState) n.msg = 'job#'+jobId+' details has been updated'
+                else n.msg = 'job#'+jobId+' state has changed from '+G_JOB_STATE_DESC[oldState]+' to '+G_JOB_STATE_DESC[newState]
+
                 next()
             })
         })

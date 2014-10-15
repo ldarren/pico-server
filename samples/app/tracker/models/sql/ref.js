@@ -1,5 +1,6 @@
 const
 GET = 'SELECT * FROM `ref` WHERE `dataId`=?;',
+REF = 'SELECT * FROM `ref` WHERE `refId`=?;',
 GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? AND `refId`=?;',
 GET_NEW = 'SELECT * FROM `ref` WHERE ??=? AND `updatedAt` > ?;',
 SET = 'INSERT INTO `ref` (`dataId`, `refId`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`),`updatedBy`=VALUES(`createdBy`),`status`=1;',
@@ -47,6 +48,9 @@ module.exports = {
     },
     get: function(dataId, cb){
         client.query(GET, [dataId], cb)
+    },
+    getRefTo: function(refId, cb){
+        client.query(REF, [refId], cb)
     },
     getVal: function(dataId, refId, cb){
         client.query(GET_VAL, [dataId, refId], cb)

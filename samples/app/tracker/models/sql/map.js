@@ -2,6 +2,8 @@ const
 GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
 GET_VAL = 'SELECT * FROM `map` WHERE `dataId`=? AND `key`=?;',
 GET_VALS = 'SELECT * FROM `map` WHERE `dataId`=? AND `key` IN (?);',
+GET_MULTI_VAL = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `key`=?;',
+GET_MULTI_VALS = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `key` IN (?);',
 GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
 GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `key`=? AND `val`=?;',
 GET_DATA_ID_V = 'SELECT `dataId`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
@@ -45,6 +47,26 @@ module.exports = {
         client.query(GET_VALS, [dataId, keys.map(function(k){return IDS[k]})], function(err, result){
             if (err) return cb(err)
             cb(null, common.group(result, KEYS, 'key'))
+        })
+    },
+    getMultiVal: function(dataIds, key, cb){
+        client.query(GET_MULTI_VAL, [dataIds, IDS[key]], function(err, result){
+            var group = common.group(result, [], 'dataId')
+            for (var k in group){
+                group[k] = common.map(group[k], KEYS, 'key', 'val')
+            }
+            cb(null, group)
+        })
+    },
+    getMultiVals: function(dataIds, keys, cb){
+        if (!keys || !keys.length) return cb(null, {})
+        client.query(GET_MULTI_VALS, [dataIds, keys.map(function(k){return IDS[k]})], function(err, result){
+            if (err) return cb(err)
+            var group = common.group(result, [], 'dataId')
+            for (var k in group){
+                group[k] = common.map(group[k], KEYS, 'key', 'val')
+            }
+            cb(null, group)
         })
     },
     getNew: function(dataId, at, cb){

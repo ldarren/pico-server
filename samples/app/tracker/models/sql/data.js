@@ -4,7 +4,7 @@ GET_TYPE = 'SELECT * FROM `data` WHERE `type`=?;',
 GET_LIST = 'SELECT * FROM `data` WHERE `id` IN (?);',
 GET_SEEN = 'SELECT * FROM `data` WHERE `seenAt` > ?;',
 GET_NEW = 'SELECT * FROM `data` WHERE `updatedAt` > ?;',
-GET_RANGE = 'SELECT * FROM `data` WHERE `updatedAt` > ? AND `updatedAt` < ?;',
+GET_TYPE_RANGE = 'SELECT * FROM `data` WHERE `type`=? AND `updatedAt` > ? AND `updatedAt` < ?;',
 CREATE = 'INSERT INTO `data` (`type`, `createdBy`) VALUES (?);',
 TOUCH = 'UPDATE `data` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
 SEEN = 'UPDATE `data` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
@@ -67,8 +67,8 @@ module.exports = {
             return cb(null, common.replace(result, KEYS, 'type'))
         })
     },
-    getRange: function(from, to, cb){
-        client.query(GET_RANGE, [from, to], function(err, result){
+    getTypeRange: function(type, from, to, cb){
+        client.query(GET_TYPE_RANGE, [IDS[type], from, to], function(err, result){
             if (err) return cb(err)
             return cb(null, common.replace(result, KEYS, 'type'))
         })

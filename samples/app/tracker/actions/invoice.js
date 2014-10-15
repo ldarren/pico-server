@@ -30,7 +30,7 @@ httpOut = function(session, details, next){
 
     next()
 },
-docxOut = function(session, details, next){
+docxOut = function(session, createdBy, details, next){
     var
     docx = new DOCX().loadFromFile(SRC+'docx'),
     transact = [],
@@ -39,6 +39,7 @@ docxOut = function(session, details, next){
 
     try{
         for(var i=0,item; item=details[i]; i++){
+            if (item.createdBy !== createdBy) continue
             json = JSON.parse(item.json)
             charge = parseFloat(json.charge) || 0
             total += charge
@@ -58,29 +59,43 @@ docxOut = function(session, details, next){
     }
     due = total - deposit;
 
-    //setting the tags
-    docx.setTags({
-        transact:transact,
-        total: total, 
-        deposit:deposit,
-        due: due 
-    })
-
-    //when finished
-    docx.finishedCallback=function () {
-        process.chdir(DST)
-        docx.output({
-            name: 'aquarius.docx',
+    sqlMap.getVal(createdBy, 'json', function(err, result){
+        if (err) return next(err)
+        try{
+            var user = JSON.parse(result[0].val)
+        }catch(exp){
+            return next(exp)
+        }
+        //setting the tags
+        docx.setTags({
+            name:user.name,
+            coy:user.coy || 'NA',
+            tel: user.tel || 'NA',
+            fax: user.fax || 'NA',
+            email: user.email || 'NA',
+            now: (new Date).toDateString(),
+            transact:transact,
+            total: total, 
+            deposit:deposit,
+            due: due 
         })
 
-        session.getModel(MODEL)[MODEL] = URL+'aquarius.docx' 
-        session.addJob([session.subJob(MODEL, MODEL)])
+        //when finished
+        docx.finishedCallback=function () {
+            process.chdir(DST)
+            docx.output({
+                name: 'aquarius.docx',
+            })
 
-        next()
-    }
+            session.getModel(MODEL)[MODEL] = URL+'aquarius.docx' 
+            session.addJob([session.subJob(MODEL, MODEL)])
 
-    //apply the tags
-    docx.applyTags()
+            next()
+        }
+
+        //apply the tags
+        docx.applyTags()
+    })
 },
 xlsxOut = function(session, details, next){
     var
@@ -122,7 +137,7 @@ module.exports = {
     },
     read: function(session, order, next){
         if (!order.from || !order.to) return 
-        sqlData.getRange(order.from, order.to, function(err, summary){
+        sqlData.getTypeRange('job', order.from, order.to, function(err, summary){
             if (err) return next(err)
 
             actData.loadAll(summary, [], function(err, details){
@@ -136,9 +151,9 @@ module.exports = {
                     return 0
                 })
 
-                switch(order.type){
-                case '2': return docxOut(session, sorted, next)
-                case '3': return xlsxOut(session, sorted, next)
+                switch(parseInt(order.type)){
+                case 2: return docxOut(session, parseInt(order.userId), sorted, next)
+                case 3: return xlsxOut(session, sorted, next)
                 default: return httpOut(session, sorted, next)
                 }
             })
