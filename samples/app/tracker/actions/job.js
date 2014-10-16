@@ -25,27 +25,25 @@ editRights = function(jobId, updatedBy, cb){
             if (err) return cb(err)
             if (!result.length) return cb(G_CERROR[400])
             var role = parseInt(result[0].val)
-
             switch(state){
             case G_JOB_STATE.OPEN:
-                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.SCHEDULE], createdBy, state)
+                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.SCHEDULE], createdBy, state, role)
+                else if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state, role)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.SCHEDULE:
-                if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state)
-                else if (role === G_USER_TYPE.DRIVER) return cb(null, [state,G_JOB_STATE.START], createdBy, state)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.START], createdBy, state)
+                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.START], createdBy, state, role)
+                else if (role === G_USER_TYPE.DRIVER) return cb(null, [state,G_JOB_STATE.START], createdBy, state, role)
+                else if (createdBy === updatedBy) return cb(null, [state, G_JOB_STATE.CANCEL], createdBy, state, role)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.START:
-                if (!code || !code.length) return cb(G_CERROR[400])
-                if (role === G_USER_TYPE.DRIVER) return cb(null, [G_JOB_STATE.STOP], createdBy, code[0].val)
-                else if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.STOP], createdBy, state, code[0].val)
+                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.STOP], createdBy, state, role)
+                else if (role === G_USER_TYPE.DRIVER && code && code.length) return cb(null, [G_JOB_STATE.STOP], createdBy, state, role, code[0].val)
                 else return cb(G_CERROR[400])
                 break
             case G_JOB_STATE.STOP:
-                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.CLOSE], createdBy, state)
+                if (role >= G_USER_TYPE.ADMIN) return cb(null, [state, G_JOB_STATE.CANCEL, G_JOB_STATE.CLOSE], createdBy, state, role)
                 else return cb(G_CERROR[400])
                 break
             default: return cb(G_CERROR[400])
@@ -109,8 +107,9 @@ module.exports = {
         updatedBy = order.id,
         jobId = order.dataId,
         newState = parseInt(order.job)
-        editRights(jobId, updatedBy, function(err, rights, createdBy, oldState, code){
+        editRights(jobId, updatedBy, function(err, rights, createdBy, oldState, role, code){
             if (err) return next(err)
+console.log(rights, newState, oldState)
             if (-1 === rights.indexOf(newState)) return next(G_CERROR[401])
             var 
             json={},
@@ -131,7 +130,7 @@ module.exports = {
                 params.code = Ceil(Random()*9999)
                 break
             case G_JOB_STATE.STOP:
-                if (!json.verify|| code != json.verify) return next(G_CERROR[400])
+                if (role < G_USER_TYPE.ADMIN && (!json.verify || code != json.verify)) return next(G_CERROR[400])
                 break
             }
             params.json = JSON.stringify(json)
