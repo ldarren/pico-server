@@ -109,7 +109,6 @@ module.exports = {
         newState = parseInt(order.job)
         editRights(jobId, updatedBy, function(err, rights, createdBy, oldState, role, code){
             if (err) return next(err)
-console.log(rights, newState, oldState)
             if (-1 === rights.indexOf(newState)) return next(G_CERROR[401])
             var 
             json={},
@@ -145,6 +144,7 @@ console.log(rights, newState, oldState)
                 l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
                 l.seenBy=[createdBy]
                 if (json.driver) l.seenBy.push(parseInt(json.driver))
+console.log('session: ', JSON.stringify(l))
 
                 var n = session.getModel(G_MODEL.NOTIFIER)
                 n.dataId = jobId

@@ -75,6 +75,7 @@ module.exports = {
         seen = order.seen
         if (!refId) return next(G_CERROR[400])
         sqlRef.getNew(refId, seen, function(err, result){
+console.log('sqlRef.getNew', refId, seen, JSON.stringify(result))
             if (err) return next(err)
             if (!result.length){
                 session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = { seen: seen }
