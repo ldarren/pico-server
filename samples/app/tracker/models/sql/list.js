@@ -40,7 +40,7 @@ module.exports = {
     get: function(dataId, cb){
         client.query(GET, [dataId], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'), result)
         })
     },
     getVal: function(dataId, key, cb){
@@ -49,13 +49,13 @@ module.exports = {
     getSeen: function(at, cb){
         client.query(GET_SEEN, [at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'), result)
         })
     },
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'))
+            return cb(null, common.group(result, KEYS, 'key'), result)
         })
     }
 }

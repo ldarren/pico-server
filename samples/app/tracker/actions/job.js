@@ -144,7 +144,6 @@ module.exports = {
                 l.seen=[G_USER_TYPE.SUPER, G_USER_TYPE.ADMIN]
                 l.seenBy=[createdBy]
                 if (json.driver) l.seenBy.push(parseInt(json.driver))
-console.log('session: ', JSON.stringify(l))
 
                 var n = session.getModel(G_MODEL.NOTIFIER)
                 n.dataId = jobId

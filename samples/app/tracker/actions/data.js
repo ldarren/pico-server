@@ -8,25 +8,19 @@ sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
 common = require('../../../lib/common'),
-getMax = function(seen, list){
-    var dates = [seen]
-    for(var key in list){
-        dates.push(Max.apply(null, common.pluck(list[key], 'updatedAt')))
-    }
-    return Max.apply(null, dates)
-},
+//BUG: data.updatedAt is not update when list or map are updated
 loadNew = function(data, seen, latest, cb){
     var dataId = data.id
     sqlMap.get(dataId, function(err, map){
         if (err) return cb(err)
         data = common.merge(data, map)
-        sqlList.getNew(dataId, seen, function(err, list){
+        sqlList.getNew(dataId, seen, function(err, list, result){
             if (err) return cb(err)
             data = common.merge(data, list)
             sqlRef.getNewRef(dataId, seen, function(err, refs){
                 if (err) return cb(err)
                 data.refs = refs
-                cb(null, data, getMax(Max(data.updatedAt, latest), list))
+                cb(null, data, Max.apply(null, common.pluck(result, 'updatedAt').concat([data.updatedAt, latest])))
             })
         })
     })
@@ -75,7 +69,6 @@ module.exports = {
         seen = order.seen
         if (!refId) return next(G_CERROR[400])
         sqlRef.getNew(refId, seen, function(err, result){
-console.log('sqlRef.getNew', refId, seen, JSON.stringify(result))
             if (err) return next(err)
             if (!result.length){
                 session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = { seen: seen }
