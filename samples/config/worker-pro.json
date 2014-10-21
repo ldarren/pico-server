@@ -8,9 +8,7 @@
             "app/tracker/models",
             "app/tracker/actions",
             "app/chat/models",
-            "app/chat/actions",
-            "app/hh/models",
-            "app/hh/actions"
+            "app/chat/actions"
         ]
     },
     "require":[
