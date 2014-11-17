@@ -3,12 +3,14 @@
         "name": "Sample Worker",
         "env": "dev",
         "elements": [
+            "app/creator/models",
+            "app/creator/api",
             "app/studio/models",
-            "app/studio/actions",
+            "app/studio/api",
             "app/tracker/models",
-            "app/tracker/actions",
+            "app/tracker/api",
             "app/chat/models",
-            "app/chat/actions"
+            "app/chat/api"
         ]
     },
     "lib":{
@@ -73,6 +75,10 @@
             "retry":3,
             "ttl":3600,
             "delay":false
+        },
+        "creatorFiles":{
+            "mod":"filedb",
+            "home":"/var/node/pico/client/samples/creator/mod/"
         }
     }
 }

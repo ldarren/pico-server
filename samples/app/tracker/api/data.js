@@ -30,8 +30,7 @@ loadAllNew = function(summary, seen, details, latest, cb){
     loadNew(summary.pop(), seen, latest, function(err, data, date){
         if (err) return cb(err)
         details.push(data)
-        if (date > latest) latest = date
-        loadAllNew(summary, seen, details, latest, cb)
+        loadAllNew(summary, seen, details, date, cb)
     })
 },
 load = function(data, cb){
@@ -66,8 +65,11 @@ module.exports = {
     poll: function(session, order, next){
         var
         refId = order.id,
-        seen = order.seen
-        if (!refId) return next(G_CERROR[400])
+        seen = order.seen,
+        seenDate = new Date(seen)
+
+        if (!refId || !isFinite(seenDate)) return next(G_CERROR[400])
+
         sqlRef.getNew(refId, seen, function(err, result){
             if (err) return next(err)
             if (!result.length){
@@ -78,7 +80,7 @@ module.exports = {
             var latest = Max.apply(null, common.pluck(result, 'updatedAt'))
             sqlData.getList(common.pluck(result, 'refId'), function(err, summary){
                 if (err) return next(err)
-                loadAllNew(summary, seen, [], new Date(seen), function(err, details, newest){
+                loadAllNew(summary, seen, [], seenDate, function(err, details, newest){
                     if (err) return next(err)
                     session.getModel(G_MODEL.DATA)[G_MODEL.DATA] = {
                         seen: (new Date(Max(newest, latest))).toISOString(),
