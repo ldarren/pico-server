@@ -6,6 +6,7 @@ JOB: 'job',
 LISTENER: 'listener',
 INVOICE: 'invoice',
 NOTIFIER: 'notifier',
+EXPENSE: 'expense',
 })
 Object.freeze(G_USER_TYPE={
 LEAD: 11,

@@ -3,6 +3,7 @@ Max = Math.max,
 actUser = require('./user'),
 actVehicle = require('./vehicle'),
 actJob = require('./job'),
+actExpense= require('./expense'),
 sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
@@ -122,6 +123,7 @@ module.exports = {
         switch(order.type){
         case 'vehicle': return actVehicle.create(session, order, next)
         case 'job': return actJob.create(session, order, next)
+        case 'expense': return actExpense.create(session, order, next)
         default: return next(G_CERROR[400])
         }
     },
@@ -131,6 +133,7 @@ module.exports = {
         case 'user': return actUser.update(session, order, next)
         case 'vehicle': return actVehicle.update(session, order, next)
         case 'job': return actJob.update(session, order, next)
+        case 'expense': return actExpnse.update(session, order, next)
         default: return next(G_CERROR[400])
         }
     },

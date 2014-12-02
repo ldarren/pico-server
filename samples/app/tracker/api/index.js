@@ -5,6 +5,7 @@ user = require('./user'),
 vehicle = require('./vehicle'),
 job = require('./job'),
 invoice = require('./invoice'),
+expense = require('./expense'),
 listener = require('./listener'),
 notifier = require('./notifier'),
 sep = function(session, order, next){console.log('###'); return next()},
@@ -18,8 +19,8 @@ all = {
         web.route('tr/data/list', [user.verify, data.list])
         web.route('tr/data/create', [user.verify, data.create, listener.update, notifier.broadcast])
         web.route('tr/data/update', [user.verify, data.getType, data.update, listener.update, notifier.broadcast])
-        web.route('tr/invoice/read', [user.verify, invoice.read])
         web.route('tr/data/remove', [user.verify, data.getType, data.remove])
+        web.route('tr/invoice/read', [user.verify, invoice.read])
         next()
     }
 }
@@ -32,5 +33,6 @@ module.exports = [
     job,
     invoice,
     listener,
-    notifier
+    notifier,
+    expense
 ]

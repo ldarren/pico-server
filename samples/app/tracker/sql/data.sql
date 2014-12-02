@@ -9,4 +9,5 @@ INSERT INTO `key` (`id`, `key`) VALUES
 (8, 'job'),
 (9, 'platform'),
 (10, 'pushToken'),
-(11, 'code');
+(11, 'code'),
+(12, 'expense');
