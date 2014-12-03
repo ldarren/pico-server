@@ -133,7 +133,7 @@ module.exports = {
         case 'user': return actUser.update(session, order, next)
         case 'vehicle': return actVehicle.update(session, order, next)
         case 'job': return actJob.update(session, order, next)
-        case 'expense': return actExpnse.update(session, order, next)
+        case 'expense': return actExpense.update(session, order, next)
         default: return next(G_CERROR[400])
         }
     },
