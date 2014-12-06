@@ -4,7 +4,7 @@ data = require('./data'),
 user = require('./user'),
 vehicle = require('./vehicle'),
 job = require('./job'),
-invoice = require('./invoice'),
+report = require('./report'),
 expense = require('./expense'),
 listener = require('./listener'),
 notifier = require('./notifier'),
@@ -20,7 +20,7 @@ all = {
         web.route('tr/data/create', [user.verify, data.create, listener.update, notifier.broadcast])
         web.route('tr/data/update', [user.verify, data.getType, data.update, listener.update, notifier.broadcast])
         web.route('tr/data/remove', [user.verify, data.getType, data.remove])
-        web.route('tr/invoice/read', [user.verify, invoice.read])
+        web.route('tr/report/read', [user.verify, report.read])
         next()
     }
 }
@@ -31,7 +31,7 @@ module.exports = [
     user,
     vehicle,
     job,
-    invoice,
+    report,
     listener,
     notifier,
     expense

@@ -24,13 +24,85 @@ sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref')
 DOCX = require('docxtemplater'),
 xlsx = require('xlsx'),
-httpOut = function(session, details, next){
+incomeView = function(session, details, next){
     session.getModel(MODEL)[MODEL] = details
     session.addJob([session.subJob(MODEL, MODEL)])
 
     next()
 },
-docxOut = function(session, createdBy, details, next){
+incomeReport = function(session, details, next){
+    var
+    wb = xlsx.readFile(SRC+'xlsx', {cellStyles:true, cellHTML: true}),
+    sheet = wb.Sheets.Invoice,
+    total = 0,
+    charge
+
+    try{
+        for (var i=START_ROW,item; item=details[i-START_ROW]; i++){
+            json = JSON.parse(item.json)
+            sheet[DATE+i] = {v:json.date, t:'s'}
+            sheet[TIME+i] = {v:json.time, t:'s'}
+            sheet[PICKUP+i] = {v:json.pickup, t:'s'}
+            sheet[DROPOFF+i] = {v:json.dropoff, t:'s'}
+            charge = parseFloat(json.charge) || 0
+            sheet[CHARGE+i] = {v:charge, t:'n'}
+            total += charge
+        }
+    }catch(exp){
+        return next(exp)
+    }
+    sheet[DEPOSIT] = {v:0,t:'n'}
+    sheet[GRAND_TOTAL] = sheet[TOTAL_DUE] = {v:total,t:'n'}
+
+    //console.log(sheet)
+
+    xlsx.writeFile(wb, DST+'aquarius.xlsx')
+
+    session.getModel(MODEL)[MODEL] = URL+'aquarius.xlsx' 
+    session.addJob([session.subJob(MODEL, MODEL)])
+
+    next()
+},
+pnlView = function(session, details, next){
+    session.getModel(MODEL)[MODEL] = details
+    session.addJob([session.subJob(MODEL, MODEL)])
+
+    next()
+},
+pnlReport = function(session, details, next){
+    var
+    wb = xlsx.readFile(SRC+'xlsx', {cellStyles:true, cellHTML: true}),
+    sheet = wb.Sheets.Invoice,
+    total = 0,
+    charge
+
+    try{
+        for (var i=START_ROW,item; item=details[i-START_ROW]; i++){
+            json = JSON.parse(item.json)
+            sheet[DATE+i] = {v:json.date, t:'s'}
+            sheet[TIME+i] = {v:json.time, t:'s'}
+            sheet[PICKUP+i] = {v:json.pickup, t:'s'}
+            sheet[DROPOFF+i] = {v:json.dropoff, t:'s'}
+            charge = parseFloat(json.charge) || 0
+            sheet[CHARGE+i] = {v:charge, t:'n'}
+            total += charge
+        }
+    }catch(exp){
+        return next(exp)
+    }
+    sheet[DEPOSIT] = {v:0,t:'n'}
+    sheet[GRAND_TOTAL] = sheet[TOTAL_DUE] = {v:total,t:'n'}
+
+    //console.log(sheet)
+
+    xlsx.writeFile(wb, DST+'aquarius.xlsx')
+
+    session.getModel(MODEL)[MODEL] = URL+'aquarius.xlsx' 
+    session.addJob([session.subJob(MODEL, MODEL)])
+
+    next()
+},
+invoice = function(session, createdBy, details, next){
     var
     docx = new DOCX().loadFromFile(SRC+'docx'),
     transact = [],
@@ -96,39 +168,6 @@ docxOut = function(session, createdBy, details, next){
         //apply the tags
         docx.applyTags()
     })
-},
-xlsxOut = function(session, details, next){
-    var
-    wb = xlsx.readFile(SRC+'xlsx', {cellStyles:true, cellHTML: true}),
-    sheet = wb.Sheets.Invoice,
-    total = 0,
-    charge
-
-    try{
-        for (var i=START_ROW,item; item=details[i-START_ROW]; i++){
-            json = JSON.parse(item.json)
-            sheet[DATE+i] = {v:json.date, t:'s'}
-            sheet[TIME+i] = {v:json.time, t:'s'}
-            sheet[PICKUP+i] = {v:json.pickup, t:'s'}
-            sheet[DROPOFF+i] = {v:json.dropoff, t:'s'}
-            charge = parseFloat(json.charge) || 0
-            sheet[CHARGE+i] = {v:charge, t:'n'}
-            total += charge
-        }
-    }catch(exp){
-        return next(exp)
-    }
-    sheet[DEPOSIT] = {v:0,t:'n'}
-    sheet[GRAND_TOTAL] = sheet[TOTAL_DUE] = {v:total,t:'n'}
-
-    //console.log(sheet)
-
-    xlsx.writeFile(wb, DST+'aquarius.xlsx')
-
-    session.getModel(MODEL)[MODEL] = URL+'aquarius.xlsx' 
-    session.addJob([session.subJob(MODEL, MODEL)])
-
-    next()
 }
 
 module.exports = {
@@ -152,9 +191,11 @@ module.exports = {
                 })
 
                 switch(parseInt(order.type)){
-                case 2: return docxOut(session, parseInt(order.userId), sorted, next)
-                case 3: return xlsxOut(session, sorted, next)
-                default: return httpOut(session, sorted, next)
+                case 1: return incomeView(session, sorted, next)
+                case 2: return incomeReport(session, sorted, next)
+                case 3: return pnlView(session, sorted, next)
+                case 4: return pnlReport(session, sorted, next)
+                case 5: return invoice(session, parseInt(order.userId), sorted, next)
                 }
             })
         })
