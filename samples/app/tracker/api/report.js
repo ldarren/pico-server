@@ -1,6 +1,6 @@
 const
 MODEL = G_MODEL.INVOICE,
-SRC = __dirname + '/../tpl/invoice.',
+SRC = __dirname + '/../tpl/',
 DST = '/var/node/pico/client/samples/tracker/dat/',
 URL = 'http://107.20.154.29/tracker/dat/',
 SERIAL = 'A',
@@ -10,11 +10,18 @@ PICKUP = 'D',
 DROPOFF = 'E',
 CHARGE = 'F',
 REMARK = 'G',
+INCOME = 'C',
+EXPENSES = 'D',
+PROFIT = 'E',
 GRAND_TOTAL = 'G34',
 DEPOSIT = 'G35',
 TOTAL_DUE = 'G36',
+TOTAL_INCOME = 'C41',
+TOTAL_EXPENSES = 'D41',
+TOTAL_PROFIT = 'E41',
 START_ROW = 16,
-END_ROW = 33
+END_ROW = 33,
+START_PNL_ROW = 10
 
 var
 actData = require('./data'),
@@ -24,6 +31,19 @@ sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref')
 DOCX = require('docxtemplater'),
 xlsx = require('xlsx'),
+monthDiff = function(d1, d2) {
+    var months
+    months = (d2.getFullYear() - d1.getFullYear()) * 12
+    months -= d1.getMonth() + 1
+    months += d2.getMonth()
+    return months <= 0 ? 0 : months
+},
+daysInMonth = function(month, year){ console.log(month, year);return new Date(year, month+1, 0).getDate() },
+updatedBySort= function(a, b){
+    if(a.updatedBy > b.updatedBy) return 1
+    else if (a.updatedBy < b.updatedBy) return -1
+    return 0
+},
 incomeView = function(session, details, next){
     session.getModel(MODEL)[MODEL] = details
     session.addJob([session.subJob(MODEL, MODEL)])
@@ -32,7 +52,7 @@ incomeView = function(session, details, next){
 },
 incomeReport = function(session, details, next){
     var
-    wb = xlsx.readFile(SRC+'xlsx', {cellStyles:true, cellHTML: true}),
+    wb = xlsx.readFile(SRC+'invoice.xlsx', {cellStyles:true, cellHTML: true}),
     sheet = wb.Sheets.Invoice,
     total = 0,
     charge
@@ -69,42 +89,59 @@ pnlView = function(session, details, next){
 
     next()
 },
-pnlReport = function(session, details, next){
+pnlReport = function(session, month, details, expenses, next){
     var
-    wb = xlsx.readFile(SRC+'xlsx', {cellStyles:true, cellHTML: true}),
-    sheet = wb.Sheets.Invoice,
-    total = 0,
-    charge
+    wb = xlsx.readFile(SRC+'pnl.xlsx', {cellStyles:true, cellHTML: true}),
+    sheet = wb.Sheets.Profit_n_Loss,
+    dailyIncome = 0, dailyExpenses = 0, totalIncome = 0, totalExpenses = 0,
+    row = START_PNL_ROW,
+    j=0,
+    charge, day, json
+
+    //console.log(wb.Sheets)
 
     try{
-        for (var i=START_ROW,item; item=details[i-START_ROW]; i++){
-            json = JSON.parse(item.json)
-            sheet[DATE+i] = {v:json.date, t:'s'}
-            sheet[TIME+i] = {v:json.time, t:'s'}
-            sheet[PICKUP+i] = {v:json.pickup, t:'s'}
-            sheet[DROPOFF+i] = {v:json.dropoff, t:'s'}
-            charge = parseFloat(json.charge) || 0
-            sheet[CHARGE+i] = {v:charge, t:'n'}
-            total += charge
+console.log('month', month.substr(5, 2), parseInt(month.substr(5, 2)),  parseInt(month.substr(5, 2))-1)
+        for(var i=1,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4))+1,row=START_PNL_ROW; i<l; i++,row++){
+            day = month + '-' + ('0'+i).slice(-2)
+console.log('day',day)
+            dailyIncome = 0
+
+            for(var d; d=details[j];){
+                json = JSON.parse(d.json)
+console.log('compare date',json.date, day)
+                if (day !== json.date) break
+                j++
+                dailyIncome += parseFloat(json.charge) || 0
+console.log('dailyIncome', dailyIncome)
+            }
+            dailyExpenses = parseFloat(expenses[i]) || 0
+            totalIncome += dailyIncome
+            totalExpenses += dailyExpenses
+console.log('dailyExpenses, totalIncome, totalExpenses', dailyExpenses, totalIncome, totalExpenses)
+
+            sheet[DATE+row] = {v:day, t:'s'}
+            sheet[INCOME+row] = {v:dailyIncome, t:'s'}
+            sheet[EXPENSES+row] = {v:dailyExpenses, t:'s'}
+            sheet[PROFIT+row] = {v:totalIncome-totalExpenses, t:'s'}
         }
     }catch(exp){
         return next(exp)
     }
-    sheet[DEPOSIT] = {v:0,t:'n'}
-    sheet[GRAND_TOTAL] = sheet[TOTAL_DUE] = {v:total,t:'n'}
+    sheet[TOTAL_INCOME] = {v:totalIncome, t:'s'}
+    sheet[TOTAL_EXPENSES] = {v:totalExpenses, t:'s'}
+    sheet[TOTAL_PROFIT] = {v:totalIncome-totalExpenses, t:'s'}
 
-    //console.log(sheet)
+    xlsx.writeFile(wb, DST+'pnl.xlsx')
 
-    xlsx.writeFile(wb, DST+'aquarius.xlsx')
-
-    session.getModel(MODEL)[MODEL] = URL+'aquarius.xlsx' 
+    session.getModel(MODEL)[MODEL] = URL+'pnl.xlsx' 
     session.addJob([session.subJob(MODEL, MODEL)])
 
     next()
 },
 invoice = function(session, createdBy, details, next){
     var
-    docx = new DOCX().loadFromFile(SRC+'docx'),
+    docx = new DOCX().loadFromFile(SRC+'invoice.docx'),
     transact = [],
     total = 0, deposit = 0, due = 0,
     item, json, charge
@@ -184,17 +221,27 @@ module.exports = {
 
                 var
                 filtered = details.filter(function(d){return 50 == d.job}),
-                sorted = filtered.sort(function(a, b){
-                    if(a.updatedBy > b.updatedBy) return 1
-                    else if (a.updatedBy < b.updatedBy) return -1
-                    return 0
-                })
+                sorted = filtered.sort(updatedBySort)
 
                 switch(parseInt(order.type)){
                 case 1: return incomeView(session, sorted, next)
                 case 2: return incomeReport(session, sorted, next)
                 case 3: return pnlView(session, sorted, next)
-                case 4: return pnlReport(session, sorted, next)
+                case 4:
+                    var
+                    expenses = [],
+                    month = order.from.substring(0, 7)
+                    sqlMap.getDataId('month', month, function(err, result){
+                        if (err) return next(err)
+                        if (!result.length) return pnlReport(session, month, sorted, expenses, next)
+                        sqlMap.getVal(result[0].dataId, 'date', function(err, result){
+                            if (err) return next(err)
+                            if (!result.length) return pnlReport(session, month, sorted, expenses, next)
+                            expenses = result[0].val.split(',')
+                            return pnlReport(session, month, sorted, expenses, next)
+                        })
+                    })
+                    break
                 case 5: return invoice(session, parseInt(order.userId), sorted, next)
                 }
             })
