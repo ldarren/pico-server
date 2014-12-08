@@ -83,8 +83,30 @@ incomeReport = function(session, details, next){
 
     next()
 },
-pnlView = function(session, details, next){
-    session.getModel(MODEL)[MODEL] = details
+pnlView = function(session, month, details, expensesRaw, next){
+    var
+    dailyIncome = 0,
+    j=0, income=[0], expenses=[0],
+    charge, day, json
+
+    try{
+        for(var i=1,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4))+1,row=START_PNL_ROW; i<l; i++,row++){
+            day = month + '-' + ('0'+i).slice(-2)
+            dailyIncome = 0
+
+            for(var d; d=details[j];){
+                json = JSON.parse(d.json)
+                if (day !== json.date) break
+                j++
+                dailyIncome += parseFloat(json.charge) || 0
+            }
+            income.push(dailyIncome)
+            expenses.push(parseFloat(expensesRaw[i]) || 0)
+        }
+    }catch(exp){
+        return next(exp)
+    }
+    session.getModel(MODEL)[MODEL] = {income:income, expenses:expenses}
     session.addJob([session.subJob(MODEL, MODEL)])
 
     next()
@@ -101,24 +123,19 @@ pnlReport = function(session, month, details, expenses, next){
     //console.log(wb.Sheets)
 
     try{
-console.log('month', month.substr(5, 2), parseInt(month.substr(5, 2)),  parseInt(month.substr(5, 2))-1)
         for(var i=1,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4))+1,row=START_PNL_ROW; i<l; i++,row++){
             day = month + '-' + ('0'+i).slice(-2)
-console.log('day',day)
             dailyIncome = 0
 
             for(var d; d=details[j];){
                 json = JSON.parse(d.json)
-console.log('compare date',json.date, day)
                 if (day !== json.date) break
                 j++
                 dailyIncome += parseFloat(json.charge) || 0
-console.log('dailyIncome', dailyIncome)
             }
             dailyExpenses = parseFloat(expenses[i]) || 0
             totalIncome += dailyIncome
             totalExpenses += dailyExpenses
-console.log('dailyExpenses, totalIncome, totalExpenses', dailyExpenses, totalIncome, totalExpenses)
 
             sheet[DATE+row] = {v:day, t:'s'}
             sheet[INCOME+row] = {v:dailyIncome, t:'s'}
@@ -221,30 +238,32 @@ module.exports = {
 
                 var
                 filtered = details.filter(function(d){return 50 == d.job}),
-                sorted = filtered.sort(updatedBySort)
+                sorted = filtered.sort(updatedBySort),
+                view
 
                 switch(parseInt(order.type)){
                 case 1: return incomeView(session, sorted, next)
                 case 2: return incomeReport(session, sorted, next)
-                case 3: return pnlView(session, sorted, next)
-                case 4:
-                    var
-                    expenses = [],
-                    month = order.from.substring(0, 7)
-                    sqlMap.getDataId('month', month, function(err, result){
-                        if (err) return next(err)
-                        if (!result.length) return pnlReport(session, month, sorted, expenses, next)
-                        sqlMap.getVal(result[0].dataId, 'date', function(err, result){
-                            if (err) return next(err)
-                            if (!result.length) return pnlReport(session, month, sorted, expenses, next)
-                            expenses = result[0].val.split(',')
-                            return pnlReport(session, month, sorted, expenses, next)
-                        })
-                    })
-                    break
+                case 3: view = pnlView; break
+                case 4: view = pnlReport; break
                 case 5: return invoice(session, parseInt(order.userId), sorted, next)
                 }
+
+                var
+                expenses = [],
+                month = order.from.substring(0, 7)
+
+                sqlMap.getDataId('month', month, function(err, result){
+                    if (err) return next(err)
+                    if (!result.length) return view(session, month, sorted, expenses, next)
+                    sqlMap.getVal(result[0].dataId, 'date', function(err, result){
+                        if (err) return next(err)
+                        if (!result.length) return view(session, month, sorted, expenses, next)
+                        expenses = result[0].val.split(',')
+                        return view(session, month, sorted, expenses, next)
+                    })
+                })
             })
         })
-    },
+    }
 }
