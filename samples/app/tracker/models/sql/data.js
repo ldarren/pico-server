@@ -5,6 +5,7 @@ GET_LIST = 'SELECT * FROM `data` WHERE `id` IN (?);',
 GET_SEEN = 'SELECT * FROM `data` WHERE `seenAt` > ?;',
 GET_NEW = 'SELECT * FROM `data` WHERE `updatedAt` > ?;',
 GET_TYPE_RANGE = 'SELECT * FROM `data` WHERE `type`=? AND `updatedAt` > ? AND `updatedAt` < ?;',
+GET_VALID = 'SELECT id FROM `data` WHERE `id` IN (?) AND `status`=1;',
 CREATE = 'INSERT INTO `data` (`type`, `createdBy`) VALUES (?);',
 TOUCH = 'UPDATE `data` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
 SEEN = 'UPDATE `data` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
@@ -72,5 +73,8 @@ module.exports = {
             if (err) return cb(err)
             return cb(null, common.replace(result, KEYS, 'type'))
         })
+    },
+    getValid: function(ids, cb){
+        client.query(GET_VALID, [ids], cb)
     }
 }

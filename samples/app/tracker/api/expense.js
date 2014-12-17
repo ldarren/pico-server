@@ -20,18 +20,16 @@ module.exports = {
             if (result[0].val < G_USER_TYPE.ADMIN) return next(G_CERROR[401])
             sqlData.create(order.type, createdBy, function(err, result){
                 if(err) return next(err)
-                var
-                dataId = result.insertId,
-                date= []
-                date[order.date]=order.expense
-                sqlMap.set(dataId, {month:order.month, date:date.join(',')}, createdBy, function(err){
+                var dataId = result.insertId
+
+                sqlMap.set(dataId, {month:order.month, date:order.json}, createdBy, function(err){
                     if(err) return next(err)
                     session.getModel(G_MODEL.EXPENSE)[G_MODEL.EXPENSE] = {
                         id:dataId,
                         type:order.type,
                         status: 1,
                         month:order.month,
-                        date:date.join(',')
+                        date:order.json
                     }
                     session.addJob([session.subJob(G_MODEL.EXPENSE, G_MODEL.EXPENSE)])
                     var l = session.getModel(G_MODEL.LISTENER)
@@ -48,19 +46,14 @@ module.exports = {
             if (err) return next(err)
             if (result[0].val < G_USER_TYPE.ADMIN) return next(G_CERROR[401])
             var dataId = order.dataId
-            sqlMap.getVal(dataId, 'date', function(err, data){
-                if (err) return next(err)
-                var date = data[0].val.split(',')
-                date[order.date] = order.expense
-                sqlMap.set(dataId, {date:date.join(',')}, updatedBy, function(err){
-                    if(err) return next(err)
-                    session.getModel(G_MODEL.EXPENSE)[G_MODEL.EXPENSE] = {
-                        id:dataId,
-                        date:date.join(',')
-                    }
-                    session.addJob([session.subJob(G_MODEL.EXPENSE, G_MODEL.EXPENSE)])
-                    next()
-                })
+            sqlMap.set(dataId, {date:order.json}, updatedBy, function(err){
+                if(err) return next(err)
+                session.getModel(G_MODEL.EXPENSE)[G_MODEL.EXPENSE] = {
+                    id:dataId,
+                    date:order.json
+                }
+                session.addJob([session.subJob(G_MODEL.EXPENSE, G_MODEL.EXPENSE)])
+                next()
             })
         })
     }

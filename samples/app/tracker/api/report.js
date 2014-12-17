@@ -29,6 +29,7 @@ sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref')
+common = require('../../../lib/common'),
 DOCX = require('docxtemplater'),
 xlsx = require('xlsx'),
 monthDiff = function(d1, d2) {
@@ -43,6 +44,40 @@ updatedBySort= function(a, b){
     if(a.updatedBy > b.updatedBy) return 1
     else if (a.updatedBy < b.updatedBy) return -1
     return 0
+},
+pnl = function(month, incomeRaw, expensesRaw, income, expenses, cb){
+    var
+    dailyIncome = 0, dailyExpenses = 0,
+    earns = [], spends = [],
+    day, j, k, d, items
+
+    try{
+        spends = JSON.parse(expensesRaw)
+        for(j=0; d=incomeRaw[j]; j++){ earns.push(JSON.parse(d.json)) }
+        j=0
+        for(var i=0,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4)),row=START_PNL_ROW; i<l; i++,row++){
+            day = month + '-' + ('0'+(i+1)).slice(-2)
+            dailyIncome = 0
+            dailyExpenses = 0
+
+            for(; d=earns[j];){
+                if (day !== d.date) break
+                j++
+                dailyIncome += parseFloat(d.charge) || 0
+            }
+            income.push(dailyIncome)
+            items = spends[i]
+            if (items){
+                for(k=0; d=items[k]; k++){
+                    dailyExpenses += d[1]
+                }
+            }
+            expenses.push(dailyExpenses)
+        }
+        return cb(null, income, expenses)
+    }catch(exp){
+        return cb(exp, income, expenses)
+    }
 },
 incomeView = function(session, details, next){
     session.getModel(MODEL)[MODEL] = details
@@ -83,57 +118,34 @@ incomeReport = function(session, details, next){
 
     next()
 },
-pnlView = function(session, month, details, expensesRaw, next){
-    var
-    dailyIncome = 0,
-    j=0, income=[0], expenses=[0],
-    charge, day, json
+pnlView = function(session, month, incomeRaw, expensesRaw, next){
+    pnl(month, incomeRaw, expensesRaw, [], [], function(err, income, expenses){
+        if (err) return next(err)
+        session.getModel(MODEL)[MODEL] = {income:income, expenses:expenses}
+        session.addJob([session.subJob(MODEL, MODEL)])
 
-    try{
-        for(var i=1,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4))+1,row=START_PNL_ROW; i<l; i++,row++){
-            day = month + '-' + ('0'+i).slice(-2)
-            dailyIncome = 0
-
-            for(var d; d=details[j];){
-                json = JSON.parse(d.json)
-                if (day !== json.date) break
-                j++
-                dailyIncome += parseFloat(json.charge) || 0
-            }
-            income.push(dailyIncome)
-            expenses.push(parseFloat(expensesRaw[i]) || 0)
-        }
-    }catch(exp){
-        return next(exp)
-    }
-    session.getModel(MODEL)[MODEL] = {income:income, expenses:expenses}
-    session.addJob([session.subJob(MODEL, MODEL)])
-
-    next()
+        next()
+    })
 },
-pnlReport = function(session, month, details, expenses, next){
-    var
-    wb = xlsx.readFile(SRC+'pnl.xlsx', {cellStyles:true, cellHTML: true}),
-    sheet = wb.Sheets.Profit_n_Loss,
-    dailyIncome = 0, dailyExpenses = 0, totalIncome = 0, totalExpenses = 0,
-    row = START_PNL_ROW,
-    j=0,
-    charge, day, json
+pnlReport = function(session, month, incomeRaw, expensesRaw, next){
+    pnl(month, incomeRaw, expensesRaw, [], [], function(err, income, expenses){
+        if (err) return next(err)
+        var
+        wb = xlsx.readFile(SRC+'pnl.xlsx', {cellStyles:true, cellHTML: true}),
+        sheet = wb.Sheets.Profit_n_Loss,
+        dailyIncome = 0, dailyExpenses = 0, totalIncome = 0, totalExpenses = 0,
+        row = START_PNL_ROW
 
-    //console.log(wb.Sheets)
+        //console.log(wb.Sheets)
 
-    try{
-        for(var i=1,l=daysInMonth(parseInt(month.substr(5, 2))-1, month.substr(0, 4))+1,row=START_PNL_ROW; i<l; i++,row++){
-            day = month + '-' + ('0'+i).slice(-2)
+        for(var i=0,l=income.length,row=START_PNL_ROW; i<l; i++,row++){
+            day = month + '-' + ('0'+(i+1)).slice(-2)
             dailyIncome = 0
+            dailyExpenses = 0
 
-            for(var d; d=details[j];){
-                json = JSON.parse(d.json)
-                if (day !== json.date) break
-                j++
-                dailyIncome += parseFloat(json.charge) || 0
-            }
-            dailyExpenses = parseFloat(expenses[i]) || 0
+            dailyIncome += income[i]
+            dailyExpenses += expenses[i]
+
             totalIncome += dailyIncome
             totalExpenses += dailyExpenses
 
@@ -142,19 +154,18 @@ pnlReport = function(session, month, details, expenses, next){
             sheet[EXPENSES+row] = {v:dailyExpenses, t:'s'}
             sheet[PROFIT+row] = {v:totalIncome-totalExpenses, t:'s'}
         }
-    }catch(exp){
-        return next(exp)
-    }
-    sheet[TOTAL_INCOME] = {v:totalIncome, t:'s'}
-    sheet[TOTAL_EXPENSES] = {v:totalExpenses, t:'s'}
-    sheet[TOTAL_PROFIT] = {v:totalIncome-totalExpenses, t:'s'}
 
-    xlsx.writeFile(wb, DST+'pnl.xlsx')
+        sheet[TOTAL_INCOME] = {v:totalIncome, t:'s'}
+        sheet[TOTAL_EXPENSES] = {v:totalExpenses, t:'s'}
+        sheet[TOTAL_PROFIT] = {v:totalIncome-totalExpenses, t:'s'}
 
-    session.getModel(MODEL)[MODEL] = URL+'pnl.xlsx' 
-    session.addJob([session.subJob(MODEL, MODEL)])
+        xlsx.writeFile(wb, DST+'pnl.xlsx')
 
-    next()
+        session.getModel(MODEL)[MODEL] = URL+'pnl.xlsx' 
+        session.addJob([session.subJob(MODEL, MODEL)])
+
+        next()
+    })
 },
 invoice = function(session, createdBy, details, next){
     var
@@ -249,18 +260,20 @@ module.exports = {
                 case 5: return invoice(session, parseInt(order.userId), sorted, next)
                 }
 
-                var
-                expenses = [],
-                month = order.from.substring(0, 7)
+                var month = order.from.substring(0, 7)
 
                 sqlMap.getDataId('month', month, function(err, result){
                     if (err) return next(err)
-                    if (!result.length) return view(session, month, sorted, expenses, next)
-                    sqlMap.getVal(result[0].dataId, 'date', function(err, result){
+                    if (!result.length) return view(session, month, sorted, undefined, next)
+                    sqlData.getValid(common.pluck(result, 'dataId'), function(err, result){
                         if (err) return next(err)
-                        if (!result.length) return view(session, month, sorted, expenses, next)
-                        expenses = result[0].val.split(',')
-                        return view(session, month, sorted, expenses, next)
+                        if (!result.length) return view(session, month, sorted, undefined, next)
+                        sqlMap.getVal(result[0].id, 'date', function(err, result){
+                            if (err) return next(err)
+                            if (!result.length) return view(session, month, sorted, undefined, next)
+
+                            return view(session, month, sorted, result[0].val, next)
+                        })
                     })
                 })
             })
