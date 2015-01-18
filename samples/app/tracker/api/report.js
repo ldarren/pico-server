@@ -115,6 +115,24 @@ incomeReport = function(session, details, next){
 
     session.getModel(MODEL)[MODEL] = URL+'aquarius.xlsx' 
     session.addJob([session.subJob(MODEL, MODEL)])
+/* server side push file download
+var path = require('path');
+var mime = require('mime');
+
+app.get('/download', function(req, res){
+
+  var file = __dirname + '/upload-folder/dramaticpenguin.MOV';
+
+  var filename = path.basename(file);
+  var mimetype = mime.lookup(file);
+
+  res.setHeader('Content-disposition', 'attachment; filename=' + filename);
+  res.setHeader('Content-type', mimetype);
+
+  var filestream = fs.createReadStream(file);
+  filestream.pipe(res);
+});
+ */
 
     next()
 },
