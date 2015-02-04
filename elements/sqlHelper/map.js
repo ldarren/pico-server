@@ -11,7 +11,7 @@ GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 
 var
-common = require('../../../../lib/common'),
+sc = require('pico-client'),
 secret = ['un', 'passwd', 'token', 'platform', 'pushToken'],
 client, KEYS, IDS
 
@@ -20,7 +20,7 @@ module.exports = {
         client = context.sqlTracker
         var k = require('./key')
         KEYS = k.keys()
-        IDS = k.ids()
+        IDS = k.vals()
         secret = secret.map(function(k){return IDS[k]})
         next()
     },
@@ -36,7 +36,7 @@ module.exports = {
     get: function(dataId, cb){
         client.query(GET, [dataId, secret], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.map(result, KEYS, 'key', 'val'))
+            return cb(null, sc.map(result, KEYS, 'key', 'val'))
         })
     },
     getVal: function(dataId, key, cb){
@@ -46,14 +46,14 @@ module.exports = {
         if (!keys || !keys.length) return cb(null, {})
         client.query(GET_VALS, [dataId, keys.map(function(k){return IDS[k]})], function(err, result){
             if (err) return cb(err)
-            cb(null, common.group(result, KEYS, 'key'))
+            cb(null, sc.group(result, KEYS, 'key'))
         })
     },
     getMultiVal: function(dataIds, key, cb){
         client.query(GET_MULTI_VAL, [dataIds, IDS[key]], function(err, result){
-            var group = common.group(result, [], 'dataId')
+            var group = sc.group(result, [], 'dataId')
             for (var k in group){
-                group[k] = common.map(group[k], KEYS, 'key', 'val')
+                group[k] = sc.map(group[k], KEYS, 'key', 'val')
             }
             cb(null, group)
         })
@@ -62,9 +62,9 @@ module.exports = {
         if (!keys || !keys.length) return cb(null, {})
         client.query(GET_MULTI_VALS, [dataIds, keys.map(function(k){return IDS[k]})], function(err, result){
             if (err) return cb(err)
-            var group = common.group(result, [], 'dataId')
+            var group = sc.group(result, [], 'dataId')
             for (var k in group){
-                group[k] = common.map(group[k], KEYS, 'key', 'val')
+                group[k] = sc.map(group[k], KEYS, 'key', 'val')
             }
             cb(null, group)
         })
@@ -72,7 +72,7 @@ module.exports = {
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, secret, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.map(result, KEYS, 'key', 'val'))
+            return cb(null, sc.map(result, KEYS, 'key', 'val'))
         })
     },
     getDataId: function(key, value, cb){

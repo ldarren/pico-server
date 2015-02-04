@@ -65,6 +65,14 @@
             "password":"root",
             "database":"pico"
         },
+        "sqlCreatorUser":{
+            "mod":"mysql",
+            "host":"localhost",
+            "port":3306,
+            "user":"root",
+            "password":"root",
+            "database":"creator_dev"
+        },
         "trackerNotifier":{
             "mod":"notifier",
             "serverAPIKey":"AIzaSyCdbk0lODnltq-krglDiH2Fto3yOn8-NLU",

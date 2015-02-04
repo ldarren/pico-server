@@ -12,7 +12,7 @@ SEEN = 'UPDATE `data` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `stat
 REMOVE = 'UPDATE `data` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
 var
-common = require('../../../../lib/common'),
+sc = require('pico-client'),
 client, KEYS, IDS
 
 module.exports = {
@@ -20,13 +20,13 @@ module.exports = {
         client = context.sqlTracker
         var k = require('./key')
         KEYS = k.keys()
-        IDS = k.ids()
+        IDS = k.vals()
         next()
     },
     create: function(type, by, cb){
         client.query(CREATE, [[IDS[type], by]], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
     touch: function(id, by, cb){
@@ -41,40 +41,40 @@ module.exports = {
     get: function(id, cb){
         client.query(GET, [id], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
     getType: function(type, cb){
         client.query(GET_TYPE, [IDS[type]], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
-    getList: function(ids, cb){
-        client.query(GET_LIST, [ids], function(err, result){
+    getList: function(vals, cb){
+        client.query(GET_LIST, [vals], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
     getSeen: function(at, cb){
         client.query(GET_SEEN, [at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
     getNew: function(at, cb){
         client.query(GET_NEW, [at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
     getTypeRange: function(type, from, to, cb){
         client.query(GET_TYPE_RANGE, [IDS[type], from, to], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.replace(result, KEYS, 'type'))
+            return cb(null, sc.replace(result, KEYS, 'type'))
         })
     },
-    getValid: function(ids, cb){
-        client.query(GET_VALID, [ids], cb)
+    getValid: function(vals, cb){
+        client.query(GET_VALID, [vals], cb)
     }
 }

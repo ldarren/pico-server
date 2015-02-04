@@ -9,7 +9,7 @@ SEEN = 'UPDATE `list` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `stat
 REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
 var
-common = require('../../../../lib/common'),
+sc = require('pico-client'),
 client, KEYS, IDS
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
         client = context.sqlTracker
         var k = require('./key')
         KEYS = k.keys()
-        IDS = k.ids()
+        IDS = k.vals()
         next()
     },
     create: function(dataId, key, values, by, cb){
@@ -40,7 +40,7 @@ module.exports = {
     get: function(dataId, cb){
         client.query(GET, [dataId], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'key'), result)
         })
     },
     getVal: function(dataId, key, cb){
@@ -49,13 +49,13 @@ module.exports = {
     getSeen: function(at, cb){
         client.query(GET_SEEN, [at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'key'), result)
         })
     },
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, common.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'key'), result)
         })
     }
 }
