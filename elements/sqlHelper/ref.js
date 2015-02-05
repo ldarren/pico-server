@@ -10,12 +10,16 @@ REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `d
 REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId` IN (?);',
 REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `refId`=?;'
 
-var client
+var
+Ref = function(){},
+client
 
-module.exports = {
-    setup: function(context, next){
-        client = context.sqlTracker
-        next()
+module.exports = Ref
+
+Ref.prototype = {
+    setup: function(connClient, cb){
+        this.client = client = connClient 
+        cb()
     },
     setRef: function(dataId, refs, vals, by, cb){
         if (!refs.length) return cb(null, [])

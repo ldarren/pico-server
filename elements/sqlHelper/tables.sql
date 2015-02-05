@@ -1,7 +1,7 @@
-DROP DATABASE IF EXISTS `creator`;
-CREATE DATABASE IF NOT EXISTS `creator` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
+DROP DATABASE IF EXISTS `creator_dev`;
+CREATE DATABASE IF NOT EXISTS `creator_dev` DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci;
 
-USE `creator`;
+USE `creator_dev`;
 
 SET storage_engine=INNODB;
 
@@ -22,21 +22,21 @@ CREATE TABLE IF NOT EXISTS `data`(
 CREATE TABLE `map`(
     `id` SERIAL PRIMARY KEY,
     `dataId` BIGINT UNSIGNED NOT NULL,
-    `key` INT NOT NULL,
-    `val` TEXT,
+    `k` INT NOT NULL,
+    `v` TEXT,
     `updatedBy` BIGINT UNSIGNED,
     `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `createdBy` BIGINT UNSIGNED NOT NULL,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY (`dataId`, `key`),
-    KEY (`key`)
+    UNIQUE KEY (`dataId`, `k`),
+    KEY (`k`)
 );
 
 CREATE TABLE `list`(
     `id` SERIAL PRIMARY KEY,
     `dataId` BIGINT UNSIGNED NOT NULL,
-    `key` INT NOT NULL,
-    `val` TEXT NOT NULL,
+    `k` INT NOT NULL,
+    `v` TEXT NOT NULL,
     `status` TINYINT UNSIGNED DEFAULT 1,
     `seen` SMALLINT UNSIGNED DEFAULT 0,
     `seenAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -52,7 +52,7 @@ CREATE TABLE `ref`(
     `id` SERIAL PRIMARY KEY,
     `dataId` BIGINT UNSIGNED NOT NULL,
     `refId` BIGINT UNSIGNED NOT NULL,
-    `val` TEXT,
+    `v` TEXT,
     `status` TINYINT UNSIGNED DEFAULT 1,
     `updatedBy` BIGINT UNSIGNED,
     `updatedAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -62,8 +62,8 @@ CREATE TABLE `ref`(
     KEY (`refId`)
 );
 
-CREATE TABLE `key`(
-    `id` INT PRIMARY KEY,
-    `key` TEXT NOT NULL,
+CREATE TABLE `const`(
+    `v` INT PRIMARY KEY,
+    `k` TEXT NOT NULL,
     `status` TINYINT UNSIGNED DEFAULT 1
 );

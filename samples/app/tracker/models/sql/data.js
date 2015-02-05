@@ -12,7 +12,7 @@ SEEN = 'UPDATE `data` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `stat
 REMOVE = 'UPDATE `data` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
 var
-common = require('../../../../lib/common'),
+common = require('pico-common'),
 client, KEYS, IDS
 
 module.exports = {

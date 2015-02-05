@@ -3,7 +3,7 @@ sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
-common = require('../../../lib/common'),
+common = require('pico-common'),
 notifier
 
 module.exports = {

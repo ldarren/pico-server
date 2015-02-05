@@ -5,7 +5,7 @@ sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
-common = require('../../../lib/common'),
+common = require('pico-common'),
 //BUG: data.updatedAt is not update when list or map are updated
 loadNew = function(data, seen, latest, cb){
     var dataId = data.id

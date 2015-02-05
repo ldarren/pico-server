@@ -12,16 +12,19 @@ SEEN = 'UPDATE `data` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `stat
 REMOVE = 'UPDATE `data` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
 var
-sc = require('pico-client'),
+sc = require('pico-common'),
+Data = function(){},
 client, KEYS, IDS
 
-module.exports = {
-    setup: function(context, next){
-        client = context.sqlTracker
-        var k = require('./key')
-        KEYS = k.keys()
-        IDS = k.vals()
-        next()
+module.exports = Data
+
+Data.prototype = {
+    setup: function(connClient, cb){
+        this.client = client = connClient 
+        var c = require('./const')
+        this.KEYS = KEYS = c.keys()
+        this.IDS = IDS = c.vals()
+        cb()
     },
     create: function(type, by, cb){
         client.query(CREATE, [[IDS[type], by]], function(err, result){

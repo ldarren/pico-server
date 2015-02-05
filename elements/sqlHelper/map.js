@@ -11,18 +11,20 @@ GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 
 var
-sc = require('pico-client'),
-secret = ['un', 'passwd', 'token', 'platform', 'pushToken'],
-client, KEYS, IDS
+sc = require('pico-common'),
+Map = function(){},
+client, KEYS, IDS, secret
 
-module.exports = {
-    setup: function(context, next){
-        client = context.sqlTracker
-        var k = require('./key')
-        KEYS = k.keys()
-        IDS = k.vals()
-        secret = secret.map(function(k){return IDS[k]})
-        next()
+module.exports = Map
+
+Map.prototype = {
+    setup: function(connClient, hidden, cb){
+        this.client = client = connClient 
+        var c = require('./const')
+        this.KEYS = KEYS = c.keys()
+        this.IDS = IDS = c.vals()
+        this.secret = secret = (hidden || []).map(function(k){return IDS[k]})
+        cb()
     },
     set: function(dataId, kv, by, cb){
         var keys = Object.keys(kv)

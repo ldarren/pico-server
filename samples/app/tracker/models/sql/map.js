@@ -11,7 +11,7 @@ GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
 SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
 
 var
-common = require('../../../../lib/common'),
+common = require('pico-common'),
 secret = ['un', 'passwd', 'token', 'platform', 'pushToken'],
 client, KEYS, IDS
 

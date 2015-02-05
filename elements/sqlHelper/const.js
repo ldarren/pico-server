@@ -5,12 +5,13 @@ sc = require('pico-common'),
 client, KEYS, VALS
 
 module.exports = {
-    setup: function(context, next){
-        context.sqlTracker.query(READ, function(err, result){
-            if (err) return next(err)
+    setup: function(connClient, cb){
+        client = connClient 
+        client.query(READ, function(err, result){
+            if (err) return cb(err)
             KEYS = sc.keyValues(result, 'v', 'k')
             VALS = sc.keyValues(result, 'k', 'v')
-            next()
+            cb()
         })
     },
     toKey: function(v){ return KEYS[v] },

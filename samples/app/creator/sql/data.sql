@@ -1,4 +1,4 @@
-INSERT INTO `key` (`id`, `key`) VALUES
+INSERT INTO `const` (`v`, `k`) VALUES
 (1, 'un'),
 (2, 'passwd'),
 (3, 'type'),
