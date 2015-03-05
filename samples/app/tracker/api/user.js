@@ -14,31 +14,25 @@ module.exports = {
         next()
     },
     signin: function(session, order, next){
-console.log(1)
         sqlMap.getDataId('un', order.un, function(err, result){
-console.log(2)
             if (err) return next(err)
             if (!result.length) return next(G_CERROR[401])
             var userId = result[0].dataId
             sqlMap.getVal(userId, 'passwd', function(err, result){
-console.log(3)
                 if (err) return next(err)
                 if (!result.length || result[0].val !== order.passwd) return next(G_CERROR[401])
                 sqlData.get(userId, function(err, result){
-console.log(4)
                     if (err) return next(err)
                     var data = result[0]
                     if (!data) return next(G_CERROR[401])
                     if ('user' !== data.type) return next(G_CERROR[401])
                     var token = createToken(order)
                     sqlMap.set(userId, {token:token}, userId, function(err){
-console.log(5)
                         if (err) return next(err)
                         session.getModel(G_MODEL.USER)[G_MODEL.USER] = {
                             id: userId,
                             token: token 
                         }
-console.log(6)
                         session.addJob([session.subJob(G_MODEL.USER, G_MODEL.USER)])
                         next()
                     })

@@ -39,7 +39,7 @@ monthDiff = function(d1, d2) {
     months += d2.getMonth()
     return months <= 0 ? 0 : months
 },
-daysInMonth = function(month, year){ console.log(month, year);return new Date(year, month+1, 0).getDate() },
+daysInMonth = function(month, year){ return new Date(year, month+1, 0).getDate() },
 updatedBySort= function(a, b){
     if(a.updatedBy > b.updatedBy) return 1
     else if (a.updatedBy < b.updatedBy) return -1
