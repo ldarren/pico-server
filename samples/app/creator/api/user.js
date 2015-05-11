@@ -5,9 +5,7 @@ sqlData = require('../models/sql/data'),
 sqlMap = require('../models/sql/map'),
 sqlList = require('../models/sql/list'),
 sqlRef = require('../models/sql/ref'),
-createToken = function(order){
-    return crypto.createHash('sha1').update(JSON.stringify(order)+Date.now()).digest('base64')
-}
+createToken = function(order){ return crypto.createHash('sha1').update(JSON.stringify(order)+Date.now()).digest('base64') }
 
 module.exports = {
     setup: function(context, next){

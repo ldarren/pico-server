@@ -1,14 +1,14 @@
 const
-GET = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?);',
-GET_VAL = 'SELECT * FROM `map` WHERE `dataId`=? AND `key`=?;',
-GET_VALS = 'SELECT * FROM `map` WHERE `dataId`=? AND `key` IN (?);',
-GET_MULTI_VAL = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `key`=?;',
-GET_MULTI_VALS = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `key` IN (?);',
-GET_NEW = 'SELECT `key`, `val` FROM `map` WHERE `dataId`=? AND `key` NOT IN (?) AND `updatedAt` > ?;',
-GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `key`=? AND `val`=?;',
-GET_DATA_ID_V = 'SELECT `dataId`, `val` FROM `map` WHERE `key`=? AND `val` IN (?)',
-GET_DATA_ID_KV = 'SELECT `dataId`, `key`, `val` FROM `map` WHERE ',
-SET = 'INSERT INTO `map` (`dataId`, `key`, `val`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `val`=VALUES(`val`), `updatedBy`=VALUES(`createdBy`);'
+GET = 'SELECT `k`, `v` FROM `map` WHERE `dataId`=? AND `k` NOT IN (?);',
+GET_VAL = 'SELECT * FROM `map` WHERE `dataId`=? AND `k`=?;',
+GET_VALS = 'SELECT * FROM `map` WHERE `dataId`=? AND `k` IN (?);',
+GET_MULTI_VAL = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `k`=?;',
+GET_MULTI_VALS = 'SELECT * FROM `map` WHERE `dataId` IN (?) AND `k` IN (?);',
+GET_NEW = 'SELECT `k`, `v` FROM `map` WHERE `dataId`=? AND `k` NOT IN (?) AND `updatedAt` > ?;',
+GET_DATA_ID = 'SELECT `dataId` FROM `map` WHERE `k`=? AND `v`=?;',
+GET_DATA_ID_V = 'SELECT `dataId`, `v` FROM `map` WHERE `k`=? AND `v` IN (?)',
+GET_DATA_ID_KV = 'SELECT `dataId`, `k`, `v` FROM `map` WHERE ',
+SET = 'INSERT INTO `map` (`dataId`, `k`, `v`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `v`=VALUES(`v`), `updatedBy`=VALUES(`createdBy`);'
 
 var
 sc = require('pico-common'),
@@ -38,7 +38,7 @@ Map.prototype = {
     get: function(dataId, cb){
         client.query(GET, [dataId, secret], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.map(result, KEYS, 'key', 'val'))
+            return cb(null, sc.map(result, KEYS, 'k', 'v'))
         })
     },
     getVal: function(dataId, key, cb){
@@ -48,14 +48,14 @@ Map.prototype = {
         if (!keys || !keys.length) return cb(null, {})
         client.query(GET_VALS, [dataId, keys.map(function(k){return IDS[k]})], function(err, result){
             if (err) return cb(err)
-            cb(null, sc.group(result, KEYS, 'key'))
+            cb(null, sc.group(result, KEYS, 'k'))
         })
     },
     getMultiVal: function(dataIds, key, cb){
         client.query(GET_MULTI_VAL, [dataIds, IDS[key]], function(err, result){
             var group = sc.group(result, [], 'dataId')
             for (var k in group){
-                group[k] = sc.map(group[k], KEYS, 'key', 'val')
+                group[k] = sc.map(group[k], KEYS, 'k', 'v')
             }
             cb(null, group)
         })
@@ -66,7 +66,7 @@ Map.prototype = {
             if (err) return cb(err)
             var group = sc.group(result, [], 'dataId')
             for (var k in group){
-                group[k] = sc.map(group[k], KEYS, 'key', 'val')
+                group[k] = sc.map(group[k], KEYS, 'k', 'v')
             }
             cb(null, group)
         })
@@ -74,7 +74,7 @@ Map.prototype = {
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, secret, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.map(result, KEYS, 'key', 'val'))
+            return cb(null, sc.map(result, KEYS, 'k', 'v'))
         })
     },
     getDataId: function(key, value, cb){
@@ -93,7 +93,7 @@ Map.prototype = {
         tpl = [],
         params = []
         for(var i=0,k; k=keys[i]; i++){
-            tpl.push('(`key`=? AND `val`=?)')
+            tpl.push('(`k`=? AND `v`=?)')
             params.push(IDS[k])
             params.push(kv[k])
         }

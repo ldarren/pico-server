@@ -1,10 +1,10 @@
 const
 GET = 'SELECT * FROM `list` WHERE `dataId`=?;',
-GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND `key`=?;',
+GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND `k`=?;',
 GET_SEEN = 'SELECT * FROM `list` WHERE `seenAt` > ?;',
 GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? AND `updatedAt` > ?;',
-CREATE = 'INSERT INTO `list` (`dataId`, `key`, `val`, `createdBy`) VALUES (?);',
-UPDATE = 'UPDATE `list` `val`=?, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
+CREATE = 'INSERT INTO `list` (`dataId`, `k`, `v`, `createdBy`) VALUES (?);',
+UPDATE = 'UPDATE `list` `v`=?, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
 SEEN = 'UPDATE `list` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
 REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
 
@@ -43,7 +43,7 @@ List.prototype = {
     get: function(dataId, cb){
         client.query(GET, [dataId], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'k'), result)
         })
     },
     getVal: function(dataId, key, cb){
@@ -52,13 +52,13 @@ List.prototype = {
     getSeen: function(at, cb){
         client.query(GET_SEEN, [at], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'k'), result)
         })
     },
     getNew: function(dataId, at, cb){
         client.query(GET_NEW, [dataId, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'key'), result)
+            return cb(null, sc.group(result, KEYS, 'k'), result)
         })
     }
 }
