@@ -1,0 +1,29 @@
+{
+    users:{
+        name:'text',
+        token:'text',
+        username:'text',
+        password:'int'
+    },
+    organizations:{
+        url:'text',
+        beacons:['json','json']
+        @users:['text']
+    },
+    beacons:{
+        name:'text'
+        uuid:'text',
+        major:'int',
+        minor:'int'
+    },
+    chats:{
+        msgs:[],
+        members:[],
+        $deliverLog:{
+            @user:'json'
+        },
+        $seenLog:{
+            @user:'json'
+        }
+    }
+}
