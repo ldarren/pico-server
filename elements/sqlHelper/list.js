@@ -1,9 +1,9 @@
 const
 GET = 'SELECT * FROM `list` WHERE `dataId`=?;',
-GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? &`k`=?;',
-GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? & `updatedAt` > ?;',
+GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND`k`=?;',
+GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? AND `updatedAt` > ?;',
 CREATE = 'INSERT INTO `list` (`dataId`, `k`, `json`, `createdBy`) VALUES (?);',
-UPDATE = 'UPDATE `list` `json`=?, `updatedBy`=? WHERE `id`=? & `status`=1;',
+UPDATE = 'UPDATE `list` `json`=?, `updatedBy`=? WHERE `id`=? AND `status`=1;',
 REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=? WHERE `id`=?;'
 
 var

@@ -1,15 +1,15 @@
 const
 GET = 'SELECT * FROM `ref` WHERE `dataId`=?;',
-GET_TYPE = 'SELECT * FROM `ref` WHERE `dataId`=? & `type`=?;',
-REF_TYPE = 'SELECT * FROM `ref` WHERE `refId`=? & `type`=?;',
-GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? & `type`=? & `refId`=?;',
-GET_NEW = 'SELECT * FROM `ref` WHERE ??=? & `updatedAt` > ?;',
+GET_TYPE = 'SELECT * FROM `ref` WHERE `dataId`=? AND `type`=?;',
+REF_TYPE = 'SELECT * FROM `ref` WHERE `refId`=? AND `type`=?;',
+GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? AND `type`=? AND `refId`=?;',
+GET_NEW = 'SELECT * FROM `ref` WHERE ??=? AND `updatedAt` > ?;',
 // mysql optimization might not set updatedAt if no changes
 SET = 'INSERT INTO `ref` (`dataId`, `type`,`refId`, `json`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `json`=VALUES(`json`),`updatedBy`=VALUES(`createdBy`),`status`=1,`updatedAt`=NOW();',
-TOUCH = 'UPDATE `ref` SET `updatedBy`=? WHERE `refId`=? & `type`=? & `status`=1;',
-REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId` IN (?) & `type`=? & `refId`=?;',
-REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId`=? & `type`=? & `refId` IN (?);',
-REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `refId`=? & `type`=?;'
+TOUCH = 'UPDATE `ref` SET `updatedBy`=? WHERE `refId`=? AND `type`=? AND `status`=1;',
+REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId` IN (?) AND `type`=? AND `refId`=?;',
+REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId`=? AND `type`=? AND `refId` IN (?);',
+REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `refId`=? AND `type`=?;'
 
 var Ref = function(){}
 
