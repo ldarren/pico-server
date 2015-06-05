@@ -46,7 +46,6 @@ CREATE TABLE `map`(
 CREATE TABLE `list`(
     `id` SERIAL PRIMARY KEY,
     `dataId` BIGINT UNSIGNED NOT NULL,
-    `type` INT UNSIGNED DEFAULT 0,
     `k` INT NOT NULL,
     `json` TEXT NOT NULL,
     `status` TINYINT UNSIGNED DEFAULT 1,
@@ -54,8 +53,8 @@ CREATE TABLE `list`(
     `updatedAt` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `createdBy` BIGINT UNSIGNED NOT NULL,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    KEY (`dataId`,`type`),
-    KEY (`k`,`type`)
+    KEY (`dataId`),
+    KEY (`k`)
 );
 
 -- 
@@ -71,7 +70,7 @@ CREATE TABLE `ref`(
     `updatedAt` TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     `createdBy` BIGINT UNSIGNED NOT NULL,
     `createdAt` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE KEY (`dataId`, `refId`),
+    UNIQUE KEY (`dataId`, `refId`, `k`),
     KEY (`refId`)
 );
 
