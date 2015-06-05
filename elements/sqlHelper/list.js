@@ -1,64 +1,69 @@
 const
 GET = 'SELECT * FROM `list` WHERE `dataId`=?;',
-GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? AND `k`=?;',
-GET_SEEN = 'SELECT * FROM `list` WHERE `seenAt` > ?;',
-GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? AND `updatedAt` > ?;',
-CREATE = 'INSERT INTO `list` (`dataId`, `k`, `v`, `createdBy`) VALUES (?);',
-UPDATE = 'UPDATE `list` `v`=?, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=? AND `status`=1;',
-SEEN = 'UPDATE `list` SET `seen`=`seen`+1, `seenAt`=NOW() WHERE `id`=? AND `status`=1;',
-REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `id`=?;'
+GET_TYPE = 'SELECT * FROM `list` WHERE `dataId`=? & `type`=?;',
+GET_VAL = 'SELECT * FROM `list` WHERE `dataId`=? & `type`=? &`k`=?;',
+GET_NEW = 'SELECT * FROM `list` WHERE `dataId`=? & `updatedAt` > ?;',
+GET_NEW_TYPE = 'SELECT * FROM `list` WHERE `dataId`=? & `type`=? & `updatedAt` > ?;',
+CREATE = 'INSERT INTO `list` (`dataId`, `type`, `k`, `json`, `createdBy`) VALUES (?);',
+UPDATE = 'UPDATE `list` `json`=?, `updatedBy`=? WHERE `id`=? & `status`=1;',
+REMOVE = 'UPDATE `list` SET `status`=0, `updatedBy`=? WHERE `id`=?;'
 
 var
-sc = require('pico-common'),
-List = function(){},
-client, KEYS, IDS
+sc = require('pico-common').obj,
+List = function(){}
 
 module.exports = List
 
 List.prototype = {
-    setup: function(connClient, cb){
-        this.client = client = connClient 
-        var c = require('./const')
-        this.KEYS = KEYS = c.keys()
-        this.IDS = IDS = c.vals()
+    setup: function(client, hash, cb){
+        this.client = client
+        this.hash = hash 
         cb()
     },
     create: function(dataId, key, values, by, cb){
         if (!values.length) return cb(null, [])
-        var params = [], k=IDS[key]
+        var params = [], k=this.hash.toVal(key)
         for(var i=0,v; v=values[i]; i++){
             params.push([dataId, k, v, by])
         }
-        client.query(CREATE, [params], cb)
+        this.client.query(CREATE, [params], cb)
     },
     update: function(id, val, by, cb){
-        client.query(SEEN, [val, by, id], cb)
-    },
-    seen: function(id, cb){
-        client.query(SEEN, [id], cb)
+        this.client.query(SEEN, [val, by, id], cb)
     },
     remove: function(id, by, cb){
-        client.query(REMOVE, [by, id], cb)
+        this.client.query(REMOVE, [by, id], cb)
     },
     get: function(dataId, cb){
-        client.query(GET, [dataId], function(err, result){
+        var h = this.hash
+        this.client.query(GET, [dataId], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'k'), result)
+            return cb(null, sc.group(result, h.keys(), 'k'), result)
         })
     },
-    getVal: function(dataId, key, cb){
-        client.query(GET_VAL, [dataId, KEYS[key]], cb)
-    },
-    getSeen: function(at, cb){
-        client.query(GET_SEEN, [at], function(err, result){
+    get: function(dataId, type, cb){
+        var h = this.hash
+        this.client.query(GET_TYPE, [dataId, h.toVal(type)], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'k'), result)
+            return cb(null, sc.group(result, h.keys(), 'k'), result)
         })
+    },
+    getVal: function(dataId, type, key, cb){
+        var h = this.hash
+        this.client.query(GET_VAL, [dataId, h.toVal(type), h.toVal(key)], cb)
     },
     getNew: function(dataId, at, cb){
-        client.query(GET_NEW, [dataId, at], function(err, result){
+        var h = this.hash
+        this.client.query(GET_NEW, [dataId, at], function(err, result){
             if (err) return cb(err)
-            return cb(null, sc.group(result, KEYS, 'k'), result)
+            return cb(null, sc.group(result, h.keys(), 'k'), result)
+        })
+    },
+    getNewType: function(dataId, type, at, cb){
+        var h = this.hash
+        this.client.query(GET_NEW_TYPE, [dataId, h.toVal(type), at], function(err, result){
+            if (err) return cb(err)
+            return cb(null, sc.group(result, h.keys(), 'k'), result)
         })
     }
 }

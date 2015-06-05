@@ -1,69 +1,76 @@
 const
 GET = 'SELECT * FROM `ref` WHERE `dataId`=?;',
-REF = 'SELECT * FROM `ref` WHERE `refId`=?;',
-GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? AND `refId`=?;',
-GET_NEW = 'SELECT * FROM `ref` WHERE ??=? AND `updatedAt` > ?;',
+GET_TYPE = 'SELECT * FROM `ref` WHERE `dataId`=? & `type`=?;',
+REF_TYPE = 'SELECT * FROM `ref` WHERE `refId`=? & `type`=?;',
+GET_VAL = 'SELECT * FROM `ref` WHERE `dataId`=? & `type`=? & `refId`=?;',
+GET_NEW = 'SELECT * FROM `ref` WHERE ??=? & `updatedAt` > ?;',
 // mysql optimization might not set updatedAt if no changes
-SET = 'INSERT INTO `ref` (`dataId`, `refId`, `v`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `v`=VALUES(`v`),`updatedBy`=VALUES(`createdBy`),`status`=1,updatedAt=NOW();',
-TOUCH = 'UPDATE `ref` SET `updatedBy`=?, `updatedAt`=NOW() WHERE `refId`=? AND `status`=1;',
-REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId` IN (?) AND `refId`=?;',
-REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `dataId`=? AND `refId` IN (?);',
-REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=?, `updatedAt`=NOW() WHERE `refId`=?;'
+SET = 'INSERT INTO `ref` (`dataId`, `type`,`refId`, `json`, `createdBy`) VALUES ? ON DUPLICATE KEY UPDATE `json`=VALUES(`json`),`updatedBy`=VALUES(`createdBy`),`status`=1,`updatedAt`=NOW();',
+TOUCH = 'UPDATE `ref` SET `updatedBy`=? WHERE `refId`=? & `type`=? & `status`=1;',
+REMOVE = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId` IN (?) & `type`=? & `refId`=?;',
+REMOVE_REF = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `dataId`=? & `type`=? & `refId` IN (?);',
+REMOVE_REF_ALL = 'UPDATE `ref` SET `status`=0, `updatedBy`=? WHERE `refId`=? & `type`=?;'
 
-var
-Ref = function(){},
-client
+var Ref = function(){}
 
 module.exports = Ref
 
 Ref.prototype = {
-    setup: function(connClient, cb){
-        this.client = client = connClient 
+    setup: function(client, hash, cb){
+        this.client = client
+        this.hash = hash
         cb()
     },
-    setRef: function(dataId, refs, vals, by, cb){
+    setRef: function(dataId, type, refs, vals, by, cb){
         if (!refs.length) return cb(null, [])
-        var params = []
+        var
+        t=this.hash.toVal(type),
+        params = []
         for(var i=0,r; r=refs[i]; i++){
-            params.push([dataId, r, vals[i], by])
+            params.push([dataId, t, r, vals[i], by])
         }
-        client.query(SET, [params], cb)
+        this.client.query(SET, [params], cb)
     },
-    set: function(data, refId, vals, by, cb){
+    set: function(data, type, refId, vals, by, cb){
         if (!data.length) return cb(null, [])
-        var params = []
+        var
+        t=this.hash.toVal(type),
+        params = []
         for(var i=0,d; d=data[i]; i++){
-            params.push([d, refId, vals[i], by])
+            params.push([d, t, refId, vals[i], by])
         }
-        client.query(SET, [params], cb)
+        this.client.query(SET, [params], cb)
     },
-    touch: function(refId, by, cb){
-        client.query(TOUCH, [by, refId], cb)
+    touch: function(type, refId, by, cb){
+        this.client.query(TOUCH, [by, refId, this.hash.toVal(type)], cb)
     },
-    remove: function(dataIds, refId, by, cb){
+    remove: function(dataIds, type, refId, by, cb){
         if (!dataIds.length) return cb(null, dataIds)
-        client.query(REMOVE, [by, dataIds, refId], cb)
+        this.client.query(REMOVE, [by, dataIds, to.hash.toVal(type), refId], cb)
     },
-    removeRef: function(dataId, refIds, by, cb){
+    removeRef: function(dataId, type, refIds, by, cb){
         if (!refIds.length) return cb(null, refIds)
-        client.query(REMOVE_REF, [by, dataId, refIds], cb)
+        this.client.query(REMOVE_REF, [by, dataId, this.hash.toVal(type), refIds], cb)
     },
-    removeRefAll: function(refId, by, cb){
-        client.query(REMOVE_REF_ALL, [by, refId], cb)
+    removeRefAll: function(type, refId, by, cb){
+        this.client.query(REMOVE_REF_ALL, [by, refId, this.hash.toVal(type)], cb)
     },
     get: function(dataId, cb){
-        client.query(GET, [dataId], cb)
+        this.client.query(GET, [dataId], cb)
     },
-    getRefTo: function(refId, cb){
-        client.query(REF, [refId], cb)
+    getType: function(dataId, type, cb){
+        this.client.query(GET_TYPE, [dataId,this.hash.toVal(type)], cb)
     },
-    getVal: function(dataId, refId, cb){
-        client.query(GET_VAL, [dataId, refId], cb)
+    getRefTo: function(type, refId, cb){
+        this.client.query(REF, [refId, this.hash.toVal(type)], cb)
+    },
+    getVal: function(dataId, type, refId, cb){
+        this.client.query(GET_VAL, [dataId, this.hash.toVal(type), refId], cb)
     },
     getNew: function(dataId, at, cb){
-        client.query(GET_NEW, ['dataId', dataId, at], cb)
+        this.client.query(GET_NEW, ['dataId', dataId, at], cb)
     },
     getNewRef: function(refId, at, cb){
-        client.query(GET_NEW, ['refId', refId, at], cb)
+        this.client.query(GET_NEW, ['refId', refId, at], cb)
     }
 }
