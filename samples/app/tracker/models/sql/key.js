@@ -1,7 +1,7 @@
 const READ = 'SELECT `id`, `key` FROM `key` WHERE `status`=1';
 
 var
-common = require('pico-common'),
+common = require('pico-common').obj,
 client, KEYS, IDS
 
 module.exports = {

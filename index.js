@@ -1,4 +1,4 @@
-require('pico-common') // execute common const
+require('./lib/const')
 
 var
 utils = require('./lib/utils'),
